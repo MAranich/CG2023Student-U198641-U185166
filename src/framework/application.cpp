@@ -56,13 +56,23 @@ void Application::Init(void)
 	printf("Camera is set to perspective mode by deafult. \n");
 
 
+	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs"); 
+	mesh = new Mesh(); 
+	mesh->CreateQuad(); 
+
+
 }
 
 // Render one frame
 void Application::Render(void)
 {
 
-	//framebuffer.Render();
+	shader->Enable();
+
+	mesh->Render();
+
+	shader->Disable();
+
 }
 
 // Called after render

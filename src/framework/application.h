@@ -9,6 +9,8 @@
 #include "image.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "shader.h"
+#include "mesh.h"
 
 class Application
 {
@@ -27,6 +29,9 @@ public:
 	int mouse_state; // Tells which buttons are pressed
 	Vector2 mouse_position; // Last mouse position
 	Vector2 mouse_delta; // Mouse movement in the last frame
+
+	Shader* shader; 
+	Mesh* mesh; 
 
 
 	Entity** hierarchy;

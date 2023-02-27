@@ -311,6 +311,7 @@ void Entity::SetTransform(Vector3 Position, Vector3 Rotation, Vector3 Scale) {
 
 void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* Zbuffer)
 {
+	/*
 	//int nVertices = mesh->vertices.size();
 	size_t nVertices = mesh->GetVertices().size();
 	std::vector<Vector3> vertices = mesh->GetVertices();
@@ -365,11 +366,7 @@ void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* Zbuffer)
 		p3.x = (++p3.x / 2) * (width - 1);
 		p3.y = (++p3.y / 2) * (height - 1);
 
-		/*
-		framebuffer->DrawLineBresenham(Vector2(p1.x, p1.y), Vector2(p2.x, p2.y), c);
-		framebuffer->DrawLineBresenham(Vector2(p2.x, p2.y), Vector2(p3.x, p3.y), c);
-		framebuffer->DrawLineBresenham(Vector2(p3.x, p3.y), Vector2(p1.x, p1.y), c);
-		*/
+		//draw line bresenham 
 
 		if (framebuffer->textures) {
 
@@ -416,5 +413,6 @@ void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* Zbuffer)
 
 
 	//printf("Rendering finished. \n"); 
+	*/
 
 }
