@@ -60,15 +60,22 @@ void Application::Init(void)
 	mesh = new Mesh(); 
 	mesh->CreateQuad(); 
 
+	fruits = new Texture(); 
+	fruits->Load("images/fruits.png"); 
+
+
 
 }
 
 // Render one frame
 void Application::Render(void)
 {
-	int exe = 5; 
+	int exe = 6; 
 	shader->Enable();
 	shader->SetFloat("u_exercise", exe); 
+	
+	shader->SetTexture("u_fruits", fruits); 
+
 	mesh->Render();
 
 	shader->Disable();

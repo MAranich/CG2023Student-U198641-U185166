@@ -1,6 +1,6 @@
 varying vec2 v_uv;
 uniform float u_exercise; 
-
+uniform sampler2D u_fruits; 
 
 float pi = 3.1415922654; 
 void main()
@@ -61,7 +61,41 @@ void main()
 		c = step(0, c * d); 
 
 		gl_FragColor = vec4(c, c, c, 1); 
+	} else if(u_exercise == 6){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		
 
+		gl_FragColor = vec4(pix, 1);
+
+	} else if(u_exercise == 7){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		
+
+		gl_FragColor = vec4(pix, 1);
+
+	} else if(u_exercise == 8){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		
+
+		gl_FragColor = vec4(pix, 1);
+
+	} else if(u_exercise == 9){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		
+
+		gl_FragColor = vec4(pix, 1);
+
+	} else if(u_exercise == 10){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		
+
+		gl_FragColor = vec4(pix, 1);
+
+	} else if(u_exercise == 11){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		
+
+		gl_FragColor = vec4(pix, 1);
 
 	}else{
 		gl_FragColor = vec4(v_uv, 0, 1);

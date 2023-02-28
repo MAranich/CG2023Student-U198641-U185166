@@ -32,6 +32,7 @@ public:
 
 	Shader* shader; 
 	Mesh* mesh; 
+	Texture* fruits; //1280 * 720
 
 
 	Entity** hierarchy;
