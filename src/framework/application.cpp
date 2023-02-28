@@ -70,10 +70,11 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
-	int exe = 8; 
+	int exe = 10; 
 	shader->Enable();
 	shader->SetFloat("u_exercise", exe);
-	shader->SetFloat("u_time", cumulativeTime);
+	shader->SetFloat("u_time", cumulativeTime); 
+	shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0)); 
 	
 	shader->SetTexture("u_fruits", fruits); 
 
