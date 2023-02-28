@@ -78,14 +78,20 @@ void main()
 
 	} else if(u_exercise == 8){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
-		float ftime = fract(u_time); 
+		float ft = fract(u_time * 0.33); //[0, 1]
+		float fft = fract(u_time * 0.33) * 2 - 1; //[-1, 1]
 
 		// xyz : yzx : zxy : yxz : xzy : zyx
 		//pix = 1-pix.zxy; 
 		//pix = vec3(pix.x * 0.13333333, pix.y, pix.z * 0.39215686); 
 		//pix = mix(pix.zxy, pix.yzx, pix.x); 
-		pix = vec3(pix.x * ftime, pix.y, pix.z); 
-		pix = pix.zyx;
+		//pix = vec3(0, pix.y, 1-pix.z); 
+		//pix = vec3(1-pix.z, pix.y, 0); 
+		//pix = vec3(1-pix.x, pix.z, ft*1-pix.z); 
+		//pix = pix.zyx; 
+
+		pix = vec3(1-pix.z, pix.x * 0.7, 0);
+		// We think we did a pretty good aproximation
 
 		gl_FragColor = vec4(pix, 1);
 
