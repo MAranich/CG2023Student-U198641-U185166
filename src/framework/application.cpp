@@ -43,7 +43,7 @@ void Application::Init(void)
 	speed = 1;
 	Orbiting = false;
 	OrbitingPoint = Vector3(0, 0, 0);
-
+	cumulativeTime = 0; 
 
 	//framebuffer.interpolatedColor = true;
 	//framebuffer.occlusion = true;
@@ -70,9 +70,10 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
-	int exe = 6; 
+	int exe = 8; 
 	shader->Enable();
-	shader->SetFloat("u_exercise", exe); 
+	shader->SetFloat("u_exercise", exe);
+	shader->SetFloat("u_time", cumulativeTime);
 	
 	shader->SetTexture("u_fruits", fruits); 
 
