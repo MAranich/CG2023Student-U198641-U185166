@@ -66,7 +66,7 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
-	int exe = 4; 
+	int exe = 5; 
 	shader->Enable();
 	shader->SetFloat("u_exercise", exe); 
 	mesh->Render();

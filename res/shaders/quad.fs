@@ -49,12 +49,64 @@ void main()
 
 
 		float s = step(0, siny - v_uv.y); 
-		gl_FragColor = vec4(0, mix(1-v_uv.y, v_uv.y, s), 0, 1); 
-		//mix(a, b, x) = b*x + (1-x)*a 
+		gl_FragColor = vec4(0, mix(1-v_uv.y, v_uv.y, s), 0, 1); //mix(a, b, x) = b*x + (1-x)*a 
+		
+	} else if(u_exercise == 5){
+
+		float n = 20; 
+
+		float c = fract(max(v_uv.x, v_uv.y) * n) * 2 - 1; 
+		float d = fract(min(v_uv.x, v_uv.y) * n) * 2 - 1; 
+
+		c = step(0, c * d); 
+
+		gl_FragColor = vec4(c, c, c, 1); 
+
 
 	}else{
 		gl_FragColor = vec4(v_uv, 0, 1);
 
 	}
+
+	/*
+	EXTRA SHADERS: 
+		1) 
+
+	float n = 20; 
+	float d = v_uv.x + v_uv.y; 
+	d = d * 0.5; 
+	float c = step(0.5, fract(d * n)); //fract() returns fractional part ( fract() = x - floor(x) )
+
+
+	gl_FragColor = vec4(c, c, c, 1); 
+
+		2) 
+
+	float n = 20; 
+	//float d = v_uv.x + v_uv.y; 
+	//d = d * 0.5; 
+	float c = step(fract(v_uv.y * n), fract(v_uv.x * n)); 
+
+
+	gl_FragColor = vec4(c, c, c, 1); 
+
+		3) 
+	float n = 20; 
+	//float d = v_uv.x + v_uv.y; 
+	//d = d * 0.5; 
+	//float c = step(fract(v_uv.y * n), fract(v_uv.x * n)); 
+	float c = step(0.5, fract(max(v_uv.x, v_uv.y) * n)); 
+		
+
+
+	gl_FragColor = vec4(c, c, c, 1); 
+
+		4) 
+
+		5) 
+
+
+
+	*/
 
 }
