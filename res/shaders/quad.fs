@@ -123,15 +123,16 @@ void main()
 		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.x - InvRes.y, 0, 1))).xyz; 
 		pix = pix + pixAux * 0.2; 
 		*/
-
+		/*
 		float r = 3.0; 
 
 		vec3 pix = vec3(0, 0, 0); //color
 		vec2 p = v_uv; 
-		float w = 2*r + 1; 
-		w = 1 / (w * w); 
 		p.x += InvRes.x * -r; 
 		p.y += InvRes.y * -r; 
+		float w = 2*r + 1; 
+		w = 1 / (w * w); 
+
 		float x_; 
 		float y_; 
 		for(x_ = -r; x_ <= r; p.x += InvRes.x){
@@ -143,13 +144,27 @@ void main()
 			}
 			x_++; 
 		}
-
-
-
-		gl_FragColor = vec4(pix, 1);
+		*/
+		/*
+		float r = 5; 
+		float x, y, xx, yy, rr=r*r, w, w0;
+		w0 = 0.3780/pow(r,1.975);
+		vec2 p;
+		vec4 col=vec4(0.0,0.0,0.0,0.0);
+		for (dx=InvRes.x ,x=-r,p.x=clamp(v_uv.x+x*dx, 0, 1);x<=r;x++,p.x+=dx){ xx=x*x;
+			for (dy=InvRes.y,y=-r,p.y=clamp(v_uv.y+y*dy, 0, 1);y<=r;y++,p.y+=dy){ yy=y*y;
+				if (xx+yy<=rr) { 
+					w=w0*exp((xx+yy)/(-2.0*rr));
+					col += w * texture2D(u_fruits, p);
+				}
+			}
+		}
+		*/
+		//gl_FragColor = vec4(col.xyz, 1);
 	} else if(u_exercise == 11){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
-		
+		// lerp() = mix()
+		pix = mix(pix, vec3(0, 0, 0), v_uv.x * 0.8); 
 
 		gl_FragColor = vec4(pix, 1);
 	}else{

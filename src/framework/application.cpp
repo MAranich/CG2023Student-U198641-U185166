@@ -70,7 +70,7 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
-	int exe = 10; 
+	int exe = 11; 
 	shader->Enable();
 	shader->SetFloat("u_exercise", exe);
 	shader->SetFloat("u_time", cumulativeTime); 
