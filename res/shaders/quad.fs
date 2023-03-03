@@ -12,6 +12,7 @@ void main()
 	float fft = fract(u_time * 0.25) * 2 - 1; //[-1, 1]
 	vec2 res = vec2(u_resolution); // resolution of the screen
 	vec2 InvRes = vec2(1/res.x, 1/res.y); 
+	float AspectRatio = res.x/res.y; 
 
 
 	if(u_exercise == 0){
@@ -81,18 +82,7 @@ void main()
 	} else if(u_exercise == 8){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
 
-
-		// xyz : yzx : zxy : yxz : xzy : zyx
-		//pix = 1-pix.zxy; 
-		//pix = vec3(pix.x * 0.13333333, pix.y, pix.z * 0.39215686); 
-		//pix = mix(pix.zxy, pix.yzx, pix.x); 
-		//pix = vec3(0, pix.y, 1-pix.z); 
-		//pix = vec3(1-pix.z, pix.y, 0); 
-		//pix = vec3(1-pix.x, pix.z, ft*1-pix.z); 
-		//pix = pix.zyx; 
-
-		pix = vec3(1-pix.z, pix.x * 0.7, 0);
-		// We think we did a pretty good aproximation
+		pix = vec3(1-pix.z, pix.x, pix.y * 0.5); 
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 9){
@@ -107,64 +97,148 @@ void main()
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 10){
-		/*
+		
+		//gaussian blurr
+
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
-		pix = pix * 0.2; 
+		pix = pix * 41;  //center value
 
-		vec3 pixAux = texture2D(u_fruits, vec2(clamp(v_uv.x + InvRes.x, 0, 1), v_uv.y)).xyz; 
-		pix = pix + pixAux * 0.2; 
+		//inner ring //8 vals
+		vec2 Xvals = vec2(clamp(v_uv.x + InvRes.x, 0, 1), clamp(v_uv.x - InvRes.x, 0, 1)); //precalculate values
+		vec2 Yvals = vec2(clamp(v_uv.y + InvRes.y, 0, 1), clamp(v_uv.y - InvRes.y, 0, 1)); 
 
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.y + InvRes.y, 0, 1))).xyz; 
-		pix = pix + pixAux * 0.2; 
+		vec3 pixAux = texture2D(u_fruits, vec2(Xvals.x, v_uv.y)).xyz; 
+		pix += pixAux * 26; 
 
-		pixAux = texture2D(u_fruits, vec2(clamp(v_uv.x - InvRes.x, 0, 1), v_uv.y)).xyz; 
-		pix = pix + pixAux * 0.2; 
+		pixAux = texture2D(u_fruits, vec2(v_uv.x, Yvals.x)).xyz; 
+		pix += pixAux * 26; 
 
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.x - InvRes.y, 0, 1))).xyz; 
-		pix = pix + pixAux * 0.2; 
-		*/
-		/*
-		float r = 3.0; 
+		pixAux = texture2D(u_fruits, vec2(Xvals.y, v_uv.y)).xyz; 
+		pix += pixAux * 26; 
 
-		vec3 pix = vec3(0, 0, 0); //color
-		vec2 p = v_uv; 
-		p.x += InvRes.x * -r; 
-		p.y += InvRes.y * -r; 
-		float w = 2*r + 1; 
-		w = 1 / (w * w); 
+		pixAux = texture2D(u_fruits, vec2(v_uv.x, Yvals.y)).xyz; 
+		pix += pixAux * 26; 
+		//
+		pixAux = texture2D(u_fruits, vec2(Xvals.x, Yvals.x)).xyz; 
+		pix += pixAux * 16; 
+		
+		pixAux = texture2D(u_fruits, vec2(Xvals.x, Yvals.y)).xyz; 
+		pix += pixAux * 16; 
+		
+		pixAux = texture2D(u_fruits, vec2(Xvals.y, Yvals.x)).xyz; 
+		pix += pixAux * 16; 
+		
+		pixAux = texture2D(u_fruits, vec2(Xvals.y, Yvals.y)).xyz; 
+		pix += pixAux * 16; 
 
-		float x_; 
-		float y_; 
-		for(x_ = -r; x_ <= r; p.x += InvRes.x){
-			for(y_ = -r; y_ <= r; p.y += InvRes.y){
-			
-				pix += w * texture2D(u_fruits, vec2(clamp(p.x, 0, 1), clamp(p.y, 0, 1))).xyz; 
-			
-				y_++; 
-			}
-			x_++; 
-		}
-		*/
-		/*
-		float r = 5; 
-		float x, y, xx, yy, rr=r*r, w, w0;
-		w0 = 0.3780/pow(r,1.975);
-		vec2 p;
-		vec4 col=vec4(0.0,0.0,0.0,0.0);
-		for (dx=InvRes.x ,x=-r,p.x=clamp(v_uv.x+x*dx, 0, 1);x<=r;x++,p.x+=dx){ xx=x*x;
-			for (dy=InvRes.y,y=-r,p.y=clamp(v_uv.y+y*dy, 0, 1);y<=r;y++,p.y+=dy){ yy=y*y;
-				if (xx+yy<=rr) { 
-					w=w0*exp((xx+yy)/(-2.0*rr));
-					col += w * texture2D(u_fruits, p);
-				}
-			}
-		}
-		*/
-		//gl_FragColor = vec4(col.xyz, 1);
+		//outer ring // 16 vals
+		vec2 _Xvals = vec2(clamp(v_uv.x + 2 * InvRes.x, 0, 1), clamp(v_uv.x - 2 * InvRes.x, 0, 1)); //precalculate values
+		vec2 _Yvals = vec2(clamp(v_uv.y + 2 * InvRes.y, 0, 1), clamp(v_uv.y - 2 * InvRes.y, 0, 1)); 
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.x, v_uv.y)).xyz; 
+		pix += pixAux * 7; 
+		
+		pixAux = texture2D(u_fruits, vec2(_Xvals.y, v_uv.y)).xyz; 
+		pix += pixAux * 7; 
+		
+		pixAux = texture2D(u_fruits, vec2(v_uv.x, _Yvals.x)).xyz; 
+		pix += pixAux * 7; 
+		
+		pixAux = texture2D(u_fruits, vec2(v_uv.x, _Yvals.y)).xyz; 
+		pix += pixAux * 7; 
+		//
+
+		pixAux = texture2D(u_fruits, vec2(Xvals.x, _Yvals.x)).xyz; 
+		pix += pixAux * 4; 
+		
+		pixAux = texture2D(u_fruits, vec2(_Xvals.x, Yvals.x)).xyz; 
+		pix += pixAux * 4; 
+
+		pixAux = texture2D(u_fruits, vec2(Xvals.y, _Yvals.x)).xyz; 
+		pix += pixAux * 4; 
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.y, Yvals.x)).xyz; 
+		pix += pixAux * 4; 
+
+		pixAux = texture2D(u_fruits, vec2(Xvals.x, _Yvals.y)).xyz; 
+		pix += pixAux * 4; 
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.x, Yvals.y)).xyz; 
+		pix += pixAux * 4; 
+
+		pixAux = texture2D(u_fruits, vec2(Xvals.y, _Yvals.y)).xyz; 
+		pix += pixAux * 4; 
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.y, Yvals.y)).xyz; 
+		pix += pixAux * 4; 
+		////
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.x, _Yvals.x)).xyz; 
+		pix += pixAux; 
+		
+		pixAux = texture2D(u_fruits, vec2(_Xvals.y, _Yvals.x)).xyz; 
+		pix += pixAux; 
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.x, _Yvals.y)).xyz; 
+		pix += pixAux; 
+
+		pixAux = texture2D(u_fruits, vec2(_Xvals.y, _Yvals.y)).xyz; 
+		pix += pixAux; 
+
+
+
+		pix = pix * 0.003663003663; // 1/273
+
+		//I just realized that texture2D() already clamps the values.  :(
+		
+
+
+		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 11){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
-		// lerp() = mix()
-		pix = mix(pix, vec3(0, 0, 0), v_uv.x * 0.8); 
+		
+		vec2 v = vec2(v_uv.x - 0.5, v_uv.y - 0.5);
+		float d = dot(v, v);
+		d = sqrt(d);
+		d = clamp(d, 0, 1);
+
+		gl_FragColor = vec4(pix * (0.8 - d), 1);
+	} else if(u_exercise == 12){
+
+		float k = 0.35; 
+		float c = cos(u_time * k); 
+		float s = sin(u_time * k); 
+		mat2 rot; 
+		rot[0][0] = c; 
+		rot[1][0] = s; 
+		rot[0][1] = -s; 
+		rot[1][1] = c; 
+
+		vec2 center = vec2(0.5);
+
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+		uv = fract(rot * (uv - center) + center); 
+
+		vec3 pix = texture2D(u_fruits, uv).xyz; 
+
+		gl_FragColor = vec4(pix, 1);
+	} else if(u_exercise == 13){
+
+		float n = 20; 
+		float invN = 0.05; 
+
+		vec3 pix = texture2D(u_fruits, floor(v_uv * n) * invN).xyz; 
+
+		gl_FragColor = vec4(pix, 1);
+	} else if(u_exercise == 14){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+
+		gl_FragColor = vec4(pix, 1);
+	} else if(u_exercise == 15){
+		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
 
 		gl_FragColor = vec4(pix, 1);
 	}else{
