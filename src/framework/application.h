@@ -35,7 +35,8 @@ public:
 	Texture* fruits; //1280 * 720
 
 
-	Entity** hierarchy;
+	//Entity** hierarchy;
+	Entity* object;
 
 	Color currColor;
 	Vector3 eye;

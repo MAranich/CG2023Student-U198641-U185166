@@ -55,13 +55,24 @@ void Application::Init(void)
 
 	printf("Camera is set to perspective mode by deafult. \n");
 
+	if (false) {
+		shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+	} else shader = Shader::Get("shaders/raster.vs", "shaders/raster.fs");
+	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
-	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs"); 
 	mesh = new Mesh(); 
 	mesh->CreateQuad(); 
 
 	fruits = new Texture(); 
 	fruits->Load("images/fruits.png"); 
+
+	Mesh* mesh = new Mesh(); 
+	mesh->LoadOBJ("meshes/lee.obj");
+
+	object = new Entity(Vector3(0, 0, 0), mesh);
+
 
 
 
@@ -70,17 +81,37 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
-	int exe = 13; 
-	shader->Enable();
-	shader->SetFloat("u_exercise", exe);
-	shader->SetFloat("u_time", cumulativeTime); 
-	shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0)); 
-	
-	shader->SetTexture("u_fruits", fruits); 
+	if (false) {
 
-	mesh->Render();
+		int exe = 13;
+		shader->Enable();
+		shader->SetFloat("u_exercise", exe);
+		shader->SetFloat("u_time", cumulativeTime);
+		shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
 
-	shader->Disable();
+		shader->SetTexture("u_fruits", fruits);
+
+		mesh->Render();
+
+		shader->Disable();
+
+	}
+	else {
+
+		shader->Enable();
+		shader->SetFloat("u_time", cumulativeTime);
+		//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
+		shader->SetMatrix44("u_viewprojection", )
+		shader->SetTexture("u_tex", fruits);
+
+		mesh->Render();
+
+		shader->Disable(); 
+
+	}
+
+
+
 
 }
 

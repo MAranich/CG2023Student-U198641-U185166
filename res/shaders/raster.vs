@@ -21,7 +21,7 @@ void main()
 
 	// Pass them to the fragment shader interpolated
 	v_world_position = world_position;
-	v_world_normal = world_normal;
+	v_world_normal = world_normal; 
 
 	// Project the vertex using the model view projection matrix
 	gl_Position = u_viewprojection * vec4(world_position, 1.0); //output of the vertex shader
