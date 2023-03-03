@@ -11,12 +11,13 @@ void main()
 	float ft = fract(u_time * 0.25); //[0, 1]
 	float fft = fract(u_time * 0.25) * 2 - 1; //[-1, 1]
 	vec2 res = vec2(u_resolution); // resolution of the screen
+	vec2 InvRes = vec2(1/res.x, 1/res.y); 
+
 
 	if(u_exercise == 0){
 
 		gl_FragColor = vec4(v_uv.x, 0, 1 - v_uv.x, 1);
-
-	}else if(u_exercise == 1) {
+	} else if(u_exercise == 1){
 		//works best if the winfow width = window height
 		vec2 v = vec2(v_uv.x - 0.5, v_uv.y - 0.5);
 		float d = dot(v, v);
@@ -24,8 +25,7 @@ void main()
 		d = clamp(d, 0, 1);
     
 		gl_FragColor = vec4(d, d, d, 1);
-
-	}else if(u_exercise == 2){
+	} else if(u_exercise == 2){
 		float n = 5.0; //number of stripes, can be customized
 		float invSqrt2 = 0.7071067812; // 1/sqrt(2), other values can be selected
 		float c = 3.414213562; // 2 + sqrt(2) // 1/(1 - invSqrt2)
@@ -107,20 +107,45 @@ void main()
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 10){
+		/*
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
-		pix = pix * 0.5; 
+		pix = pix * 0.2; 
 
-		vec3 pixAux = texture2D(u_fruits, vec2(clamp(v_uv.x + 1/res.x, 0, 1), v_uv.y)).xyz; 
-		pix = pix + pixAux * 0.1; 
+		vec3 pixAux = texture2D(u_fruits, vec2(clamp(v_uv.x + InvRes.x, 0, 1), v_uv.y)).xyz; 
+		pix = pix + pixAux * 0.2; 
 
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.y + 1/res.y, 0, 1))).xyz; 
-		pix = pix + pixAux * 0.1; 
+		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.y + InvRes.y, 0, 1))).xyz; 
+		pix = pix + pixAux * 0.2; 
 
-		pixAux = texture2D(u_fruits, vec2(clamp(v_uv.x - 1/res.x, 0, 1), v_uv.y)).xyz; 
-		pix = pix + pixAux * 0.1; 
+		pixAux = texture2D(u_fruits, vec2(clamp(v_uv.x - InvRes.x, 0, 1), v_uv.y)).xyz; 
+		pix = pix + pixAux * 0.2; 
 
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.x - 1/res.y, 0, 1))).xyz; 
-		pix = pix + pixAux * 0.1; 
+		pixAux = texture2D(u_fruits, vec2(v_uv.x, clamp(v_uv.x - InvRes.y, 0, 1))).xyz; 
+		pix = pix + pixAux * 0.2; 
+		*/
+
+		//float w = 0.111111111111; // 1/25
+		float w = 0.04; // 1/25
+
+		vec3 pix = vec3(0, 0, 0); 
+		vec2 p = v_uv; 
+		float r = 2.0; 
+		p.x += InvRes.x * -r; 
+		p.y += InvRes.y * -r; 
+		float dx = InvRes.x; 
+		float dy = InvRes.y; 
+		float x_; 
+		float y_; 
+		for(x_ = -r; x_ <= r; x_++, p.x += dx){
+			for(y_ = -r; y_ <= r; y_++, p.y += dy){
+			
+				p.x = clamp(p.x, 0, 1); 
+				p.y = clamp(p.y, 0, 1); 
+				pix += w * texture2D(u_fruits, p).xyz; 
+			
+			}
+		}
+
 
 
 		gl_FragColor = vec4(pix, 1);
