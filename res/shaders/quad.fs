@@ -245,7 +245,6 @@ void main()
 		//pix = mix(pix, vec3(0, 0, 0), v_uv.x * 0.8); 
 >>>>>>> 9f353b91dc4ba4e49f2fce08b9433b0a9ad8c1c9
 
-		gl_FragColor = vec4(pix, 1);
 		vec2 v = vec2(v_uv.x - 0.5, v_uv.y - 0.5);
 		float d = dot(v, v);
 		d = sqrt(d);
