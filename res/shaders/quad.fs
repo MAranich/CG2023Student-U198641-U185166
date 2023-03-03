@@ -124,26 +124,24 @@ void main()
 		pix = pix + pixAux * 0.2; 
 		*/
 
-		//float w = 0.111111111111; // 1/25
-		float w = 0.04; // 1/25
+		float r = 3.0; 
 
-		vec3 pix = vec3(0, 0, 0); 
+		vec3 pix = vec3(0, 0, 0); //color
 		vec2 p = v_uv; 
-		float r = 2.0; 
+		float w = 2*r + 1; 
+		w = 1 / (w * w); 
 		p.x += InvRes.x * -r; 
 		p.y += InvRes.y * -r; 
-		float dx = InvRes.x; 
-		float dy = InvRes.y; 
 		float x_; 
 		float y_; 
-		for(x_ = -r; x_ <= r; x_++, p.x += dx){
-			for(y_ = -r; y_ <= r; y_++, p.y += dy){
+		for(x_ = -r; x_ <= r; p.x += InvRes.x){
+			for(y_ = -r; y_ <= r; p.y += InvRes.y){
 			
-				p.x = clamp(p.x, 0, 1); 
-				p.y = clamp(p.y, 0, 1); 
-				pix += w * texture2D(u_fruits, p).xyz; 
+				pix += w * texture2D(u_fruits, vec2(clamp(p.x, 0, 1), clamp(p.y, 0, 1))).xyz; 
 			
+				y_++; 
 			}
+			x_++; 
 		}
 
 
