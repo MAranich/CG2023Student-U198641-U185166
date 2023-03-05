@@ -41,8 +41,7 @@ public:
 	void SetMesh(Mesh* _mesh) { mesh = _mesh; }
 	Mesh* GetMesh() { return mesh; }
 
-
-	void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* Zbuffer); 
+	void Entity::Render(); 
 
 
 };

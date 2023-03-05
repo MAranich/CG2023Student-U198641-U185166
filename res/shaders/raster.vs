@@ -5,7 +5,7 @@ uniform mat4 u_viewprojection;
 // Variables to pass to the fragment shader
 varying vec2 v_uv;
 varying vec3 v_world_position;
-varying vec3 v_world_normal;
+varying vec3 v_world_normal; 
 
 //here create uniforms for all the data we need here
 
@@ -15,6 +15,7 @@ void main()
 
 	// Convert local position to world space
 	vec3 world_position = (u_model * vec4( gl_Vertex.xyz, 1.0)).xyz;
+	//world_position.z += sin(world_position.x); 
 
 	// Convert local normal to world space
 	vec3 world_normal = (u_model * vec4( gl_Normal.xyz, 0.0)).xyz;

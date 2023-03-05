@@ -33,6 +33,7 @@ public:
 	Shader* shader; 
 	Mesh* mesh; 
 	Texture* fruits; //1280 * 720
+	Texture* tex; 
 
 
 	//Entity** hierarchy;
@@ -51,6 +52,9 @@ public:
 	Vector3 OrbitingPoint;
 	float secElapsed;
 	float cumulativeTime;
+
+	bool rendering; 
+	int exercise; 
 
 
 

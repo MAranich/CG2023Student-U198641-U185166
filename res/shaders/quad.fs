@@ -13,7 +13,9 @@ void main()
 	vec2 res = vec2(u_resolution); // resolution of the screen
 	vec2 InvRes = vec2(1/res.x, 1/res.y); 
 	float AspectRatio = res.x/res.y; 
-
+	float InvAspectRatio = res.y/res.x; 
+	
+	//TODO: squares exe 3, 5, gaussian filter
 
 	if(u_exercise == 0){
 
@@ -220,18 +222,19 @@ void main()
 		float displacement = (1-AspectRatio) * 0.5; 
 		uv.x = uv.x * AspectRatio + displacement; 
 
-		uv = fract(rot * (uv - center) + center); 
+		uv = rot * (uv - center) + center; 
+		uv.x = (uv.x - displacement) * InvAspectRatio; 
+		uv = fract(uv); 
+
 
 		vec3 pix = texture2D(u_fruits, uv).xyz; 
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 13){
-
 		float n = 20; 
 		float invN = 0.05; 
 
 		vec3 pix = texture2D(u_fruits, floor(v_uv * n) * invN).xyz; 
-
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 14){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
