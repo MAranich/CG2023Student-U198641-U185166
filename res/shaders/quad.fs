@@ -29,13 +29,18 @@ void main()
     
 		gl_FragColor = vec4(d, d, d, 1);
 	} else if(u_exercise == 2){
-		float n = 5.0; //number of stripes, can be customized
+		float n = 8.0; //number of stripes, can be customized
 		float invSqrt2 = 0.7071067812; // 1/sqrt(2), other values can be selected
 		float c = 3.414213562; // 2 + sqrt(2) // 1/(1 - invSqrt2)
 		n = n * pi; //precalculating (n * pi)
 
-		float r = c*max(pow(sin(v_uv.x * n), 2) - invSqrt2, 0); 
-		float b = c*max(pow(sin(v_uv.y * n), 2) - invSqrt2, 0);
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+
+		float r = c*max(pow(sin(uv.x * n), 2) - invSqrt2, 0); 
+		float b = c*max(pow(sin(uv.y * n), 2) - invSqrt2, 0);
 	
 		//n = n * 2; 
 		//float r = c*max(sin(v_uv.x * n) - invSqrt2, 0); 
