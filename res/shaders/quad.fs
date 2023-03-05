@@ -82,9 +82,6 @@ void main()
 
 		c = step(0, c * d); 
 
-		//uv.x = (uv.x - displacement) * InvAspectRatio; 
-
-
 		gl_FragColor = vec4(c, c, c, 1); 
 	} else if(u_exercise == 6){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
@@ -240,6 +237,7 @@ void main()
 		uv.x = uv.x * AspectRatio + displacement; 
 
 		uv = rot * (uv - center) + center; 
+
 		uv.x = (uv.x - displacement) * InvAspectRatio; 
 		uv = fract(uv); 
 
@@ -251,7 +249,17 @@ void main()
 		float n = 20; 
 		float invN = 0.05; 
 
-		vec3 pix = texture2D(u_fruits, floor(v_uv * n) * invN).xyz; 
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+		
+		uv = floor(uv * n) * invN; 
+
+		uv.x = (uv.x - displacement) * InvAspectRatio; 
+
+		vec3 pix = texture2D(u_fruits, uv).xyz; 
+
+
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 14){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
