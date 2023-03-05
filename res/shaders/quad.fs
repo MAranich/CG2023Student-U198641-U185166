@@ -44,7 +44,7 @@ void main()
 
 		gl_FragColor = vec4(r, 0, b, 1); 
 	} else if(u_exercise == 3){
-		//works best if the winfow width = window height
+
 		float n = 10; 
 		float invN = 0.1; // 1/n
 
@@ -73,10 +73,17 @@ void main()
 
 		float n = 20; 
 
-		float c = fract(max(v_uv.x, v_uv.y) * n) * 2 - 1; 
-		float d = fract(min(v_uv.x, v_uv.y) * n) * 2 - 1; 
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+		float c = fract(max(uv.x, uv.y) * n) * 2 - 1; 
+		float d = fract(min(uv.x, uv.y) * n) * 2 - 1; 
 
 		c = step(0, c * d); 
+
+		//uv.x = (uv.x - displacement) * InvAspectRatio; 
+
 
 		gl_FragColor = vec4(c, c, c, 1); 
 	} else if(u_exercise == 6){
