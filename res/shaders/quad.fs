@@ -29,13 +29,18 @@ void main()
     
 		gl_FragColor = vec4(d, d, d, 1);
 	} else if(u_exercise == 2){
-		float n = 5.0; //number of stripes, can be customized
+		float n = 8.0; //number of stripes, can be customized
 		float invSqrt2 = 0.7071067812; // 1/sqrt(2), other values can be selected
 		float c = 3.414213562; // 2 + sqrt(2) // 1/(1 - invSqrt2)
 		n = n * pi; //precalculating (n * pi)
 
-		float r = c*max(pow(sin(v_uv.x * n), 2) - invSqrt2, 0); 
-		float b = c*max(pow(sin(v_uv.y * n), 2) - invSqrt2, 0);
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+
+		float r = c*max(pow(sin(uv.x * n), 2) - invSqrt2, 0); 
+		float b = c*max(pow(sin(uv.y * n), 2) - invSqrt2, 0);
 	
 		//n = n * 2; 
 		//float r = c*max(sin(v_uv.x * n) - invSqrt2, 0); 
@@ -44,10 +49,20 @@ void main()
 
 		gl_FragColor = vec4(r, 0, b, 1); 
 	} else if(u_exercise == 3){
-		//works best if the winfow width = window height
+
 		float n = 10; 
-		float invN = 0.1; 
-		gl_FragColor = vec4(floor(v_uv * n) * invN, 0, 1);
+		float invN = 0.1; // 1/n
+
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+		uv = floor(uv * n) * invN; 
+
+		uv.x = (uv.x - displacement) * InvAspectRatio; 
+		//uv = fract(uv); 
+
+		gl_FragColor = vec4(uv, 0, 1);
 	} else if(u_exercise == 4){
 		//easy implementation: 
 		float siny = sin(v_uv.x * 2 * pi) * 0.2 + 0.5; // 0.2 is an arbitrary chosen constant it could be = to [0, 0.5]
@@ -63,8 +78,12 @@ void main()
 
 		float n = 20; 
 
-		float c = fract(max(v_uv.x, v_uv.y) * n) * 2 - 1; 
-		float d = fract(min(v_uv.x, v_uv.y) * n) * 2 - 1; 
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+		float c = fract(max(uv.x, uv.y) * n) * 2 - 1; 
+		float d = fract(min(uv.x, uv.y) * n) * 2 - 1; 
 
 		c = step(0, c * d); 
 
@@ -223,6 +242,7 @@ void main()
 		uv.x = uv.x * AspectRatio + displacement; 
 
 		uv = rot * (uv - center) + center; 
+
 		uv.x = (uv.x - displacement) * InvAspectRatio; 
 		uv = fract(uv); 
 
@@ -234,7 +254,17 @@ void main()
 		float n = 20; 
 		float invN = 0.05; 
 
-		vec3 pix = texture2D(u_fruits, floor(v_uv * n) * invN).xyz; 
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+		
+		uv = floor(uv * n) * invN; 
+
+		uv.x = (uv.x - displacement) * InvAspectRatio; 
+
+		vec3 pix = texture2D(u_fruits, uv).xyz; 
+
+
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 14){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
