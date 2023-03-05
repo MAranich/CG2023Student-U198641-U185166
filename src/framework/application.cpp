@@ -7,8 +7,8 @@ Application::Application(const char* caption, int width, int height)
 {
 	this->window = createWindow(caption, width, height);
 
-	int w,h;
-	SDL_GetWindowSize(window,&w,&h);
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
 
 	this->mouse_state = 0;
 	this->time = 0.f;
@@ -43,7 +43,7 @@ void Application::Init(void)
 	speed = 30;
 	Orbiting = false;
 	OrbitingPoint = Vector3(0, 0, 0);
-	cumulativeTime = 0; 
+	cumulativeTime = 0;
 
 	//framebuffer.interpolatedColor = true;
 	//framebuffer.occlusion = true;
@@ -61,15 +61,11 @@ void Application::Init(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	rendering = false; 
-	exercise = 0; 
+	rendering = false;
+	exercise = 0;
 
-	if (rendering) {
-		shader = Shader::Get("shaders/raster.vs", "shaders/raster.fs");
-	}
-	else {
-		shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
-	}
+	rendshader = Shader::Get("shaders/raster.vs", "shaders/raster.fs");
+	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
 
 	mesh = new Mesh();
 	mesh->CreateQuad();
@@ -80,8 +76,8 @@ void Application::Init(void)
 	tex = new Texture();
 	tex->Load("textures/lee_color_specular.tga");
 
-	Mesh* leeMesh = new Mesh(); 
-	leeMesh->LoadOBJ("meshes/lee.obj"); 
+	Mesh* leeMesh = new Mesh();
+	leeMesh->LoadOBJ("meshes/lee.obj");
 
 
 	object = new Entity(Vector3(0, 0, 0), Vector3(0, PI, 0), leeMesh);
@@ -94,17 +90,17 @@ void Application::Render(void)
 {
 	if (rendering) {
 
-		shader->Enable();
+		rendshader->Enable();
 
-		shader->SetFloat("u_time", cumulativeTime);
+		rendshader->SetFloat("u_time", cumulativeTime);
 		//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
-		shader->SetMatrix44("u_viewprojection", camera.GetViewProjectionMatrix());
-		shader->SetMatrix44("u_model", object->GetModel());
-		shader->SetTexture("u_tex", tex);
+		rendshader->SetMatrix44("u_viewprojection", camera.GetViewProjectionMatrix());
+		rendshader->SetMatrix44("u_model", object->GetModel());
+		rendshader->SetTexture("u_tex", tex);
 
 		object->Render();
 
-		shader->Disable();
+		rendshader->Disable();
 
 	}
 	else {
@@ -131,7 +127,7 @@ void Application::Render(void)
 // Called after render
 void Application::Update(float seconds_elapsed)
 {
-	secElapsed = seconds_elapsed; 
+	secElapsed = seconds_elapsed;
 	cumulativeTime += seconds_elapsed;
 
 	if (Orbiting) {
@@ -150,7 +146,7 @@ void Application::Update(float seconds_elapsed)
 }
 
 //keyboard press event 
-void Application::OnKeyPressed( SDL_KeyboardEvent event )
+void Application::OnKeyPressed(SDL_KeyboardEvent event)
 {
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	if (rendering) {
@@ -293,33 +289,32 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 
 
 		if (event.keysym.sym == SDLK_RETURN) {
-			shader = Shader::Get("shaders/raster.vs", "shaders/raster.fs"); 
-			rendering = false; 
+			rendering = false;
 			camera.eye = Vector3(0, 0, -1);
 			camera.center = Vector3(0, 0, 0);
+			camera.LookAt(eye, center, Vector3(0, 1, 0));
 		}
 
 	}
-	else 
+	else
 	{
 
 
 		if (event.keysym.sym == SDLK_RETURN) {
-			shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
 			rendering = true;
 		}
 		else if (event.keysym.sym == SDLK_RIGHT) exercise++;
-		else if (event.keysym.sym == SDLK_LEFT) exercise--; 
-		
+		else if (event.keysym.sym == SDLK_LEFT) exercise--;
+
 		exercise = clamp((unsigned int)exercise, (unsigned int)0, (unsigned int)15);
 
 	}
 
-	printf("%d\t%d\n", event.keysym.sym, exercise);	
+	printf("%d\t%d\n", event.keysym.sym, exercise);
 
 }
 
-void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
+void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 {
 	//LMB = 1	MMB = 2		RMB = 3
 	if (event.button == 1) { //if LMB is clicked
@@ -335,7 +330,7 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 	}
 }
 
-void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
+void Application::OnMouseButtonUp(SDL_MouseButtonEvent event)
 {
 
 }
@@ -391,6 +386,6 @@ void Application::OnWheel(SDL_MouseWheelEvent event)
 }
 
 void Application::OnFileChanged(const char* filename)
-{ 
+{
 	Shader::ReloadSingleShader(filename);
 }

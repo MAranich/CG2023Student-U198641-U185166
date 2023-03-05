@@ -1,4 +1,4 @@
-/*  
+/*
 	+ This class encapsulates the application, is in charge of creating the data, getting the user input, process the update and render.
 */
 
@@ -30,10 +30,11 @@ public:
 	Vector2 mouse_position; // Last mouse position
 	Vector2 mouse_delta; // Mouse movement in the last frame
 
-	Shader* shader; 
-	Mesh* mesh; 
+	Shader* shader;
+	Shader* rendshader;
+	Mesh* mesh;
 	Texture* fruits; //1280 * 720
-	Texture* tex; 
+	Texture* tex;
 
 
 	//Entity** hierarchy;
@@ -53,8 +54,8 @@ public:
 	float secElapsed;
 	float cumulativeTime;
 
-	bool rendering; 
-	int exercise; 
+	bool rendering;
+	int exercise;
 
 
 
@@ -67,28 +68,28 @@ public:
 
 	// CPU Global framebuffer
 	//Image framebuffer;
-	
-	Camera camera; 
+
+	Camera camera;
 
 	// Constructor and main methods
 	Application(const char* caption, int width, int height);
 	~Application();
 
-	void Init( void );
-	void Render( void );
-	void Update( float dt );
+	void Init(void);
+	void Render(void);
+	void Update(float dt);
 
 	// Other methods to control the app
 	void SetWindowSize(int width, int height) {
-		glViewport( 0,0, width, height );
+		glViewport(0, 0, width, height);
 		this->window_width = width;
 		this->window_height = height;
 	}
 
 	Vector2 GetWindowSize()
 	{
-		int w,h;
-		SDL_GetWindowSize(window,&w,&h);
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
 		return Vector2(float(w), float(h));
 	}
 };
