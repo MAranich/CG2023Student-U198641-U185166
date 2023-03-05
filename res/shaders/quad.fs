@@ -46,8 +46,18 @@ void main()
 	} else if(u_exercise == 3){
 		//works best if the winfow width = window height
 		float n = 10; 
-		float invN = 0.1; 
-		gl_FragColor = vec4(floor(v_uv * n) * invN, 0, 1);
+		float invN = 0.1; // 1/n
+
+		vec2 uv = v_uv; 
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+
+		uv = floor(uv * n) * invN; 
+
+		uv.x = (uv.x - displacement) * InvAspectRatio; 
+		//uv = fract(uv); 
+
+		gl_FragColor = vec4(uv, 0, 1);
 	} else if(u_exercise == 4){
 		//easy implementation: 
 		float siny = sin(v_uv.x * 2 * pi) * 0.2 + 0.5; // 0.2 is an arbitrary chosen constant it could be = to [0, 0.5]
