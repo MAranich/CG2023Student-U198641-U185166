@@ -5,6 +5,9 @@ uniform float u_time;
 uniform vec3 u_resolution; 
 
 float pi = 3.1415922654; 
+
+float rand(vec2 n); 
+
 void main()
 {
 	//auxiliar variables
@@ -267,11 +270,23 @@ void main()
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 14){
-		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		vec2 uv = v_uv; 
+		float n = 20; 
+		float invN = 0.05; 
 
-		gl_FragColor = vec4(pix, 1);
+		float displacement = (1-AspectRatio) * 0.5; 
+		uv.x = uv.x * AspectRatio + displacement; 
+		
+		uv = floor(uv * n) * invN; 
+
+		uv.x = (uv.x - displacement) * InvAspectRatio; 
+
+		vec3 pix = vec3(rand(uv + u_time), rand(uv.yx + u_time + 1), rand(uv + u_time + 2)); 
+		//vec3 pix = vec3(uv, 0); 
+		gl_FragColor = vec4(pix, 1); 
 	}else{
-		gl_FragColor = vec4(v_uv, 0, 1);
+
+		gl_FragColor = vec4(v_uv, 0, 1); 
 
 	}
 
@@ -316,4 +331,9 @@ void main()
 
 	*/
 
+}
+
+float rand(vec2 n) { 
+	//return fract(sin(mod(dot(n, vec2(12.9898, 4.1414)), pi)) * 43758.5453);
+	return fract(sin(dot(n, vec2(12.9898, 78.233))) * 43758.5453); 
 }
