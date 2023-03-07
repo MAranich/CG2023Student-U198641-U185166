@@ -18,7 +18,7 @@ void main()
 	float AspectRatio = res.x/res.y; 
 	float InvAspectRatio = res.y/res.x; 
 	
-	//TODO: squares exe 3, 5, gaussian filter
+	//TODO: gaussian filter 
 
 	if(u_exercise == 0){
 
@@ -123,98 +123,31 @@ void main()
 	} else if(u_exercise == 10){
 		
 		//gaussian blurr
+		vec3 pix = vec3(0); 
+		//vec3 pix = texture2D(u_fruits, v_uv).xyz; 
+		//float f = 0.5; 
+		//float s = sin(u_time * f); 
 
-		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
-		pix = pix * 41;  //center value
+		float r = 3; 
+		r = floor(r); 
+		float w = 1; 
 
-		//inner ring //8 vals
-		vec2 Xvals = vec2(clamp(v_uv.x + InvRes.x, 0, 1), clamp(v_uv.x - InvRes.x, 0, 1)); //precalculate values
-		vec2 Yvals = vec2(clamp(v_uv.y + InvRes.y, 0, 1), clamp(v_uv.y - InvRes.y, 0, 1)); 
+		float sigma = 1; 
+		sigma = 2 * sigma * sigma; 
+		sigma = 1/ sigma; 
 
-		vec3 pixAux = texture2D(u_fruits, vec2(Xvals.x, v_uv.y)).xyz; 
-		pix += pixAux * 26; 
+		float x = 0; 
+		float y = 0; 
 
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, Yvals.x)).xyz; 
-		pix += pixAux * 26; 
+		for(x = -r; x <= r; x = x + 1){
+			for(y = -r; y <= r; y = y + 1){ 
+				w = sigma * exp(- (x * x + y * y) * sigma); 
+				pix += w * texture2D(u_fruits, vec2(v_uv.x + x * InvRes.x, v_uv.y + y * InvRes.y)).xyz; 
+			}
+		}
 
-		pixAux = texture2D(u_fruits, vec2(Xvals.y, v_uv.y)).xyz; 
-		pix += pixAux * 26; 
-
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, Yvals.y)).xyz; 
-		pix += pixAux * 26; 
-		//
-		pixAux = texture2D(u_fruits, vec2(Xvals.x, Yvals.x)).xyz; 
-		pix += pixAux * 16; 
-		
-		pixAux = texture2D(u_fruits, vec2(Xvals.x, Yvals.y)).xyz; 
-		pix += pixAux * 16; 
-		
-		pixAux = texture2D(u_fruits, vec2(Xvals.y, Yvals.x)).xyz; 
-		pix += pixAux * 16; 
-		
-		pixAux = texture2D(u_fruits, vec2(Xvals.y, Yvals.y)).xyz; 
-		pix += pixAux * 16; 
-
-		//outer ring // 16 vals
-		vec2 _Xvals = vec2(clamp(v_uv.x + 2 * InvRes.x, 0, 1), clamp(v_uv.x - 2 * InvRes.x, 0, 1)); //precalculate values
-		vec2 _Yvals = vec2(clamp(v_uv.y + 2 * InvRes.y, 0, 1), clamp(v_uv.y - 2 * InvRes.y, 0, 1)); 
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.x, v_uv.y)).xyz; 
-		pix += pixAux * 7; 
-		
-		pixAux = texture2D(u_fruits, vec2(_Xvals.y, v_uv.y)).xyz; 
-		pix += pixAux * 7; 
-		
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, _Yvals.x)).xyz; 
-		pix += pixAux * 7; 
-		
-		pixAux = texture2D(u_fruits, vec2(v_uv.x, _Yvals.y)).xyz; 
-		pix += pixAux * 7; 
-		//
-
-		pixAux = texture2D(u_fruits, vec2(Xvals.x, _Yvals.x)).xyz; 
-		pix += pixAux * 4; 
-		
-		pixAux = texture2D(u_fruits, vec2(_Xvals.x, Yvals.x)).xyz; 
-		pix += pixAux * 4; 
-
-		pixAux = texture2D(u_fruits, vec2(Xvals.y, _Yvals.x)).xyz; 
-		pix += pixAux * 4; 
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.y, Yvals.x)).xyz; 
-		pix += pixAux * 4; 
-
-		pixAux = texture2D(u_fruits, vec2(Xvals.x, _Yvals.y)).xyz; 
-		pix += pixAux * 4; 
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.x, Yvals.y)).xyz; 
-		pix += pixAux * 4; 
-
-		pixAux = texture2D(u_fruits, vec2(Xvals.y, _Yvals.y)).xyz; 
-		pix += pixAux * 4; 
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.y, Yvals.y)).xyz; 
-		pix += pixAux * 4; 
-		////
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.x, _Yvals.x)).xyz; 
-		pix += pixAux; 
-		
-		pixAux = texture2D(u_fruits, vec2(_Xvals.y, _Yvals.x)).xyz; 
-		pix += pixAux; 
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.x, _Yvals.y)).xyz; 
-		pix += pixAux; 
-
-		pixAux = texture2D(u_fruits, vec2(_Xvals.y, _Yvals.y)).xyz; 
-		pix += pixAux; 
-
-
-
-		pix = pix * 0.003663003663; // 1/273
-
-		//I just realized that texture2D() already clamps the values.  :(
-		
+		float w0 = 0.3183098862; // 1/ 2 pi
+		pix = w0 * pix;  
 
 
 		gl_FragColor = vec4(pix, 1);
@@ -254,8 +187,10 @@ void main()
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 13){
-		float n = 20; 
-		float invN = 0.05; 
+		float f = 0.5; 
+		float s = sin(u_time * f); 
+		float n = 50.0 * (0.5 + s * s); 
+		float invN = 1/n; 
 
 		vec2 uv = v_uv; 
 		float displacement = (1-AspectRatio) * 0.5; 
@@ -270,10 +205,12 @@ void main()
 
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 14){
+		//EXTRA FILTER
+		//boronoi
 		vec2 uv = v_uv; 
 		float n = 20; 
 		float invN = 0.05; 
-
+		/*
 		float displacement = (1-AspectRatio) * 0.5; 
 		uv.x = uv.x * AspectRatio + displacement; 
 		
@@ -282,6 +219,9 @@ void main()
 		uv.x = (uv.x - displacement) * InvAspectRatio; 
 
 		vec3 pix = vec3(rand(uv + u_time), rand(uv.yx + u_time + 1), rand(uv + u_time + 2)); 
+		*/
+		vec3 pix = vec3(rand(uv + u_time)); 
+
 		//vec3 pix = vec3(uv, 0); 
 		gl_FragColor = vec4(pix, 1); 
 	}else{
@@ -334,6 +274,6 @@ void main()
 }
 
 float rand(vec2 n) { 
-	//return fract(sin(mod(dot(n, vec2(12.9898, 4.1414)), pi)) * 43758.5453);
+	//return fract(sin(mod(dot(n, vec2(12.9898, 4.1414)), pi)) * 43758.5453); 
 	return fract(sin(dot(n, vec2(12.9898, 78.233))) * 43758.5453); 
 }
