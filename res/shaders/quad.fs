@@ -141,12 +141,12 @@ void main()
 
 		for(x = -r; x <= r; x = x + 1){
 			for(y = -r; y <= r; y = y + 1){ 
-				w = sigma * exp(- (x * x + y * y) * sigma); 
+				w = sigma * exp(-(x * x + y * y) * sigma); 
 				pix += w * texture2D(u_fruits, vec2(v_uv.x + x * InvRes.x, v_uv.y + y * InvRes.y)).xyz; 
 			}
 		}
 
-		float w0 = 0.3183098862; // 1/ 2 pi
+		float w0 = 0.3183098862; // 1/ pi
 		pix = w0 * pix;  
 
 
