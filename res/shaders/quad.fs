@@ -11,8 +11,8 @@ float rand(vec2 n);
 void main()
 {
 	//auxiliar variables
-	float ft = fract(u_time * 0.25); //[0, 1]
-	float fft = fract(u_time * 0.25) * 2 - 1; //[-1, 1]
+	float ft = fract(u_time * 0.33); //[0, 1]
+	float fft = fract(u_time * 0.33) * 2 - 1; //[-1, 1]
 	vec2 res = vec2(u_resolution); // resolution of the screen
 	vec2 InvRes = vec2(1/res.x, 1/res.y); 
 	float AspectRatio = res.x/res.y; 
@@ -128,29 +128,28 @@ void main()
 		//float f = 0.5; 
 		//float s = sin(u_time * f); 
 
-		float r = 8 * ft; // r must be in [0, inf] 
+		float r = 4; // r must be in [0, inf] 
 		r = floor(r); 
 
 		float sigma = r; 
-		sigma = sigma * sigma + 1; 
-
-		float w = 1; 
-
+		sigma = sigma + 1; 
 		sigma = 2 * sigma * sigma; 
 		sigma = 1/ sigma; 
 
 		float x = 0; 
 		float y = 0; 
+		float w = 1; 
 
 
+		//0.3183098862 = 1/pi
 		for(x = -r; x <= r; x = x + 1){
 			for(y = -r; y <= r; y = y + 1){ 
-				w = sigma * exp(-(x * x + y * y) * sigma); 
+				w = sigma * exp(-(x * x + y * y) * sigma); // sigma = 1/(2*sigma^2)
 				pix += w * texture2D(u_fruits, vec2(v_uv.x + x * InvRes.x, v_uv.y + y * InvRes.y)).xyz; 
 			}
 		}
 
-		pix = 0.3183098862 * pix;  
+		pix = 0.743 *pix; // 0.75 seems to work fine
 
 
 		gl_FragColor = vec4(pix, 1);
