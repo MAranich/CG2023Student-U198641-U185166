@@ -310,7 +310,7 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 
 	}
 
-	printf("%d\t%d\n", event.keysym.sym, exercise);
+	printf("\tCurrenly displaying exercise %d. \n", exercise);
 
 }
 

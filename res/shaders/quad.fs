@@ -128,16 +128,20 @@ void main()
 		//float f = 0.5; 
 		//float s = sin(u_time * f); 
 
-		float r = 3; 
+		float r = 8 * ft; // r must be in [0, inf] 
 		r = floor(r); 
+
+		float sigma = r; 
+		sigma = sigma * sigma + 1; 
+
 		float w = 1; 
 
-		float sigma = 1; 
 		sigma = 2 * sigma * sigma; 
 		sigma = 1/ sigma; 
 
 		float x = 0; 
 		float y = 0; 
+
 
 		for(x = -r; x <= r; x = x + 1){
 			for(y = -r; y <= r; y = y + 1){ 
@@ -146,8 +150,7 @@ void main()
 			}
 		}
 
-		float w0 = 0.3183098862; // 1/ pi
-		pix = w0 * pix;  
+		pix = 0.3183098862 * pix;  
 
 
 		gl_FragColor = vec4(pix, 1);
