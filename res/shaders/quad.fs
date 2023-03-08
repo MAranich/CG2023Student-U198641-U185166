@@ -142,7 +142,7 @@ void main()
 		float w = 1; 
 
 
-		//0.3183098862 = 1/pi
+		//We used a for to make r (the effect of the blurr) customizable
 		for(x = -r; x <= r; x = x + 1){
 			for(y = -r; y <= r; y = y + 1){ 
 				w = sigma * exp(-(x * x + y * y) * sigma); // sigma = 1/(2*sigma^2)
@@ -152,7 +152,7 @@ void main()
 
 		pix = 0.743 *pix; // 0.75 seems to work fine
 
-
+		//0.3183098862 = 1/pi
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 11){
 		vec3 pix = texture2D(u_fruits, v_uv).xyz; 
@@ -209,13 +209,16 @@ void main()
 		gl_FragColor = vec4(pix, 1);
 	} else if(u_exercise == 14){
 		//EXTRA FILTER
-		vec2 uv = v_uv; 
-		float AngleOffset = u_time * 0.1; 
-		float CellDensity = 9; 
-		vec2 g = floor(uv * CellDensity);
-		vec2 f = fract(uv * CellDensity);
-		float t = 8; 
-		vec3 res = vec3(8.0, 0.0, 0.0);
+		//voronoi noise / Worley noise
+		
+		//Inputs: 
+		//uv
+		float AngleOffset = u_time * 1; 
+		float CellDensity = 5; 
+
+		vec2 g = floor(v_uv * CellDensity);
+		vec2 f = fract(v_uv * CellDensity);
+		vec3 res = vec3(10, 0, 0);
 		int y; 
 		int x; 
 		vec2 l; 
@@ -223,11 +226,15 @@ void main()
 		float dist = 0;  
 		vec3 pix; 
 
+		vec2 aux; 
+
 		for(int y=-1; y<=1; y++) {
 			for(int x=-1; x<=1; x++) {
 				l = vec2(x, y); 
 				offset = Vrand(l + g, AngleOffset); 
-				dist = sqrt(dot(l + offset - f, l + offset - f)); 
+				aux = l + offset - f; 
+				dist = sqrt(dot(aux, aux)); 
+				//dist = dot(aux, aux); 
 
 				if(dist < res.x) {
 					res = vec3(dist, offset); 
@@ -237,7 +244,9 @@ void main()
 			}
 		}
 
-
+		//Una mica de manipulació de canals de color 
+		// amb el temps (ft) per donar una mica de color. 
+		pix = vec3(pix.r * sin(fract(ft + v_uv.x) * pi), 1-pix.g * sin(fract(ft + v_uv.y) * pi), sin(fract(ft + 0.5) * pi)) ; 
 		gl_FragColor = vec4(pix, 1); 
 	}else{
 
@@ -250,15 +259,18 @@ void main()
 }
 
 float rand(vec2 n) { 
-	//return fract(sin(mod(dot(n, vec2(12.9898, 4.1414)), pi)) * 43758.5453); 
-	return fract(sin(dot(n, vec2(12.9898, 78.233))) * 43758.5453); 
+	return fract(sin(mod(dot(n, vec2(12.9898, 4.1414)), pi)) * 43758.5453); 
+	//return fract(sin(dot(n, vec2(12.9898, 78.233))) * 43758.5453); 
 }
 
 vec2 Vrand(vec2 uv, float o) {
 
-	mat2 m = mat2(15.27, 47.63, 99.41, 89.98); 
-	uv = (m * uv) * 46839.32; 
+	//mat2 m = mat2(15.27, 47.63, 99.41, 89.98); 
+	//mat2 m = mat2(15.27, 99.41, 47.63, 89.98); 
+	uv = mat2(15.27, 99.41, 47.63, 89.98) * uv; 
 	
+	uv = uv * (30); 
+
 	return vec2(sin(uv.x + o) * 0.5 + 0.5, cos(uv.y + o) * 0.5 + 0.5); 
 
 }

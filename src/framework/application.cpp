@@ -306,11 +306,13 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 		else if (event.keysym.sym == SDLK_RIGHT) exercise++;
 		else if (event.keysym.sym == SDLK_LEFT) exercise--;
 
-		exercise = clamp((unsigned int)exercise, (unsigned int)0, (unsigned int)15);
+		//do a clamp()
+		if (exercise < 0) exercise = 0;
+		else if (15 < exercise) exercise = 15; 
 
 	}
 
-	printf("\tCurrenly displaying exercise %d. \n", exercise);
+	printf("\tCurrenly displaying exercise %d. \n\n", exercise);
 
 }
 
