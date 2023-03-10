@@ -3,6 +3,11 @@
 #include "texture.h"
 
 
+struct {
+	Vector3 Position; 
+	Vector3 IntensityDiffuse; 
+	Vector3 IntensitySpecular; 
+} Light;
 
 
 
