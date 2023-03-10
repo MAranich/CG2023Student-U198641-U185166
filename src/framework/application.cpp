@@ -61,7 +61,7 @@ void Application::Init(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	rendering = false;
+	rendering = true;
 	exercise = 0;
 
 	rendshader = Shader::Get("shaders/raster.vs", "shaders/raster.fs");
@@ -289,10 +289,10 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 
 
 		if (event.keysym.sym == SDLK_RETURN) {
-			rendering = false;
-			camera.eye = Vector3(0, 0, -1);
-			camera.center = Vector3(0, 0, 0);
-			camera.LookAt(eye, center, Vector3(0, 1, 0));
+			//rendering = false;
+			//camera.eye = Vector3(0, 0, -1);
+			//camera.center = Vector3(0, 0, 0);
+			//camera.LookAt(eye, center, Vector3(0, 1, 0));
 		}
 
 	}
@@ -301,7 +301,7 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 
 
 		if (event.keysym.sym == SDLK_RETURN) {
-			rendering = true;
+			//rendering = true;
 		}
 		else if (event.keysym.sym == SDLK_RIGHT) exercise++;
 		else if (event.keysym.sym == SDLK_LEFT) exercise--;
@@ -312,7 +312,7 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 
 	}
 
-	printf("\tCurrenly displaying exercise %d. \n\n", exercise);
+	//printf("\tCurrenly displaying exercise %d. \n\n", exercise);
 
 }
 
