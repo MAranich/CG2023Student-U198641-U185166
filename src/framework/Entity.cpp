@@ -12,8 +12,8 @@
 
 Entity::Entity(Vector3 Position, Vector3 Rotation, Vector3 Scale, Mesh* _mesh)
 {
-
-	Texture = NULL; 
+	
+	material = NULL; 
 	mesh = _mesh;
 	model = Matrix44();
 
@@ -72,7 +72,7 @@ Entity::Entity(Vector3 Position, Vector3 Rotation, Vector3 Scale, Mesh* _mesh)
 Entity::Entity(Vector3 Position, Vector3 Rotation, Mesh* _mesh)
 {
 
-	Texture = NULL;
+	material = NULL;
 	mesh = _mesh;
 	model = Matrix44();
 
@@ -124,7 +124,7 @@ Entity::Entity(Vector3 Position, Vector3 Rotation, Mesh* _mesh)
 Entity::Entity(Vector3 Position, Mesh* _mesh, Vector3 Scale)
 {
 
-	Texture = NULL;
+	material = NULL;
 	mesh = _mesh;
 	model = Matrix44();
 
@@ -155,7 +155,7 @@ Entity::Entity(Vector3 Position, Mesh* _mesh, Vector3 Scale)
 Entity::Entity(Vector3 Position, Mesh* _mesh)
 {
 
-	Texture = NULL;
+	material = NULL;
 	mesh = _mesh;
 	model = Matrix44();
 
@@ -309,9 +309,15 @@ void Entity::SetTransform(Vector3 Position, Vector3 Rotation, Vector3 Scale) {
 
 }
 
-void Entity::Render()
+void Entity::Render(sUniformData data)
 {
 	
-	mesh->Render(); 
+	
+	data.model = model;
+
+	material->Enable(data); 
+	mesh->Render();
+
+
 
 }

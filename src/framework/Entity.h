@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "image.h"
 #include "mesh.h"
+#include "material.h"
 
 
 class Entity
@@ -14,7 +15,9 @@ private:
 	Vector3 scale;
 	Mesh* mesh;
 	Matrix44 model; 
-	Image* Texture; 
+	//Image* Texture; 
+	Material* material; 
+
 
 public:
 
@@ -35,13 +38,16 @@ public:
 
 	Matrix44 GetModel() { return model; }
 
-	void SetTexture(Image* texture) { Texture = texture; }
-	Image* GetTexture() { return Texture; }
+	//void SetTexture(Image* texture) { Texture = texture; }
+	//Image* GetTexture() { return Texture; }
+
+	void SetMaterial(Material* m) { material = m; };
+	Material* GetMaterial(Material* m) { return material; };
 
 	void SetMesh(Mesh* _mesh) { mesh = _mesh; }
 	Mesh* GetMesh() { return mesh; }
 
-	void Entity::Render(); 
+	void Entity::Render(sUniformData data); 
 
 
 };

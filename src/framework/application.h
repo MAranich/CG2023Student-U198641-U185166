@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "shader.h"
 #include "mesh.h"
+#include "material.h"
 
 class Application
 {
@@ -57,6 +58,10 @@ public:
 	bool rendering;
 	int exercise;
 
+	Vector3 AmbientIntensity; 
+
+	Light light; 
+	sUniformData data; 
 
 
 	void OnKeyPressed(SDL_KeyboardEvent event);
@@ -93,3 +98,5 @@ public:
 		return Vector2(float(w), float(h));
 	}
 };
+
+

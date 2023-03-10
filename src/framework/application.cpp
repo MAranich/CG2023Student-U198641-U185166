@@ -55,6 +55,17 @@ void Application::Init(void)
 
 	printf("Camera is set to perspective mode by deafult. \n");
 
+	light.Position = Vector3(2, 0.5f, 0); 
+	
+
+
+	Mesh* leeMesh = new Mesh();
+	leeMesh->LoadOBJ("meshes/lee.obj");
+
+
+	object = new Entity(Vector3(0, 0, 0), Vector3(0, PI, 0), leeMesh);
+
+	//object->SetMaterial(new Material())
 
 	//shading time! 
 
@@ -65,22 +76,16 @@ void Application::Init(void)
 	exercise = 0;
 
 	rendshader = Shader::Get("shaders/raster.vs", "shaders/raster.fs");
-	shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+	//shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
 
 	mesh = new Mesh();
 	mesh->CreateQuad();
 
-	fruits = new Texture();
-	fruits->Load("images/fruits.png");
 
 	tex = new Texture();
 	tex->Load("textures/lee_color_specular.tga");
 
-	Mesh* leeMesh = new Mesh();
-	leeMesh->LoadOBJ("meshes/lee.obj");
 
-
-	object = new Entity(Vector3(0, 0, 0), Vector3(0, PI, 0), leeMesh);
 
 
 }
@@ -88,6 +93,9 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
+	data.ViewProjMatrix = camera.GetViewProjectionMatrix(); 
+	//data._lights = &light; 
+
 	if (rendering) {
 
 		rendshader->Enable();
@@ -98,7 +106,7 @@ void Application::Render(void)
 		rendshader->SetMatrix44("u_model", object->GetModel());
 		rendshader->SetTexture("u_tex", tex);
 
-		object->Render();
+		//object->Render();
 
 		rendshader->Disable();
 
