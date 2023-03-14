@@ -43,7 +43,7 @@ void Application::Init(void)
 	LastPosEye = Vector2(0, 0);
 	speed = 30;
 	Orbiting = false;
-	OrbitingPoint = Vector3(0, 0, 0);
+	OrbitingPoint = Vector3(0, 0.2f, 0);
 	cumulativeTime = 0;
 
 	//framebuffer.interpolatedColor = true;
@@ -57,8 +57,8 @@ void Application::Init(void)
 	printf("Camera is set to perspective mode by deafult. \n");
 
 	light.Position = Vector3(-2, 2, 0); 
-	light.IntensityDiffuse = Vector3(255, 255, 255); 
-	light.IntensitySpecular = Vector3(255, 255, 255); 
+	light.IntensityDiffuse = Vector3(1, 1, 1); 
+	light.IntensitySpecular = Vector3(1, 1, 1) * 5; 
 	
 
 
@@ -85,20 +85,20 @@ void Application::Init(void)
 	mesh = new Mesh();
 	mesh->CreateQuad();
 
-	material = new Material(Vector3(255, 255, 255), Vector3(255, 255, 255), Vector3(200, 200, 200), 50);
+	material = new Material(Vector3(0.5f, 0.5f, 0.5f), Vector3(0.8f, 0.8f, 0.8f), Vector3(1, 1, 1), 50);
 	
 	tex = new Texture();
 	//tex->Load("textures/lee_normal.tga");
 	tex->Load("textures/lee_color_specular.tga");
-	SpecTex = new Texture(); 
-	SpecTex->Load("textures/lee_color_specular.tga");
+	NormTex = new Texture();
+	NormTex->Load("textures/lee_normal.tga");
 
 
 	material->SetTexture(tex);
 	material->SetShader(rendshader);
 	object->SetMaterial(material);
 	mode = 1;
-	AmbientIntensity = Vector3(20, 20, 30);
+	AmbientIntensity = Vector3(0.4f, 0.4f, 0.4f);
 
 
 
@@ -119,7 +119,7 @@ void Application::Render(void)
 	data.Position = light.Position;
 	data.IntensityDiffuse = light.IntensityDiffuse;
 	data.IntensitySpecular = light.IntensitySpecular; 
-	data.SpecularText = SpecTex; 
+	data.SpecularText = NormTex; 
 
 	//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
 
@@ -193,7 +193,7 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 				c = cos(angle);
 				s = sin(angle);
 
-				DistRot = Vector3(Dist.x * c - Dist.z * s, 0, Dist.x * s + Dist.z * c);
+				DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
 				//multyply Distance by rotation matrix
 
 				eye = OrbitingPoint + DistRot;
@@ -208,7 +208,7 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 				c = cos(angle);
 				s = sin(-angle);
 
-				DistRot = Vector3(Dist.x * c - Dist.z * s, 0, Dist.x * s + Dist.z * c);
+				DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
 				//multyply Distance by rotation matrix
 
 				eye = OrbitingPoint + DistRot;
@@ -251,22 +251,22 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 				break;
 			case SDLK_w: //forward (pos Z dir)
 				KeyDir = Vector3(1, 0, 0);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, 0, KeyDir.x * s + KeyDir.z * c);
+				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
 				eye = eye + KeyDir * speed * secElapsed;
 				break;
 			case SDLK_a:
 				KeyDir = Vector3(0, 0, -1);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, 0, KeyDir.x * s + KeyDir.z * c);
+				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
 				eye = eye + KeyDir * speed * secElapsed;
 				break;
 			case SDLK_s:
 				KeyDir = Vector3(-1, 0, 0);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, 0, KeyDir.x * s + KeyDir.z * c);
+				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
 				eye = eye + KeyDir * speed * secElapsed;
 				break;
 			case SDLK_d:
 				KeyDir = Vector3(0, 0, 1);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, 0, KeyDir.x * s + KeyDir.z * c);
+				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
 				eye = eye + KeyDir * speed * secElapsed;
 				break;
 			case SDLK_SPACE: //go up 
@@ -331,7 +331,7 @@ void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 		Orbiting = !Orbiting;
 		if (Orbiting) {
 			eye.y = 0;
-			OrbitingPoint = Vector3(0, 0, 0); //Set Orbiting point, Could be changed
+			//OrbitingPoint = Vector3(0, 0, 0); //Set Orbiting point, Could be changed
 			printf("Now orbiting arround (%0.3lf, %0.3lf, %0.3lf) \nPress A and D to orbit! \n", OrbitingPoint.x, OrbitingPoint.y, OrbitingPoint.z);
 		}
 		else {
@@ -362,7 +362,7 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 			float c = cos(angle);
 			float s = sin(angle);
 
-			DistRot = Vector3(Dist.x * c - Dist.z * s, 0, Dist.x * s + Dist.z * c);
+			DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
 			//multyply Distance by rotation matrix
 
 			eye = OrbitingPoint + DistRot;

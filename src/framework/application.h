@@ -36,7 +36,7 @@ public:
 	Mesh* mesh;
 	Texture* fruits; //1280 * 720
 	Texture* tex; 
-	Texture* SpecTex; 
+	Texture* NormTex; 
 
 
 	//Entity** hierarchy;

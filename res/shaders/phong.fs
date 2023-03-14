@@ -19,7 +19,7 @@ uniform vec3 u_lightpos;
 uniform vec3 u_intensitydiff;
 uniform vec3 u_intensityspec;
 
-float div255 = 0.003921568; // = 1/255
+//float div255 = 0.0039215686; // = 1/255
 
 void main()
 {
@@ -28,30 +28,29 @@ void main()
 	float ft = fract(u_time * 0.333); 
 	float fft = fract(u_time * 0.333) * 2 - 1; 
 
-	vec3 color = normalize(v_world_normal);
+	//vec3 color = normalize(v_world_normal);
+	vec3 N = normalize(v_world_normal);
+	vec4 color = vec4(0);
 
 	
-	if(v_uv.x <= 1 && 0 <= v_uv.x && v_uv.y <= 1 && 0 <= v_uv.y){
-		color = texture2D(u_tex, v_uv).xyz; 
-	}
+	color = texture2D(u_tex, v_uv); 
 	
 	//La
-	vec3 intensity = mix(u_ka * div255, color, ft) * u_ambientintensity * div255; 
+	vec3 intensity = u_ka * color.xyz * u_ambientintensity; 
 
 	//Ld
 	vec3 L = normalize(u_lightpos - v_world_position);
-	intensity = intensity + color * max(dot(L, v_world_normal), 0) * u_intensitydiff * div255;
-	// * 255 is to adjust the range from [0, 1] to [0, 255] (Kd must be in [0, 255] to work properly)
+	intensity = intensity + color.xyz * max(dot(L, N), 0) * u_intensitydiff; 
 
 	//Ls
-	vec3 V = normalize(v_world_position - u_camerapos);
-	vec3 R = reflect(L, v_world_normal); 
-	vec4 aux = texture2D(u_spec_tex, v_uv); 
-	vec3 ks = aux.rgb * aux.a * 4; 
-	intensity = intensity + ks * u_intensityspec * pow(max(dot(R, V), 0), u_shiny) * div255;
+	vec3 V = normalize(u_camerapos - v_world_position);
+	vec3 R = reflect(-L, N); 
+	R = normalize(R); 
+	vec3 ks = vec3(color.a); 
+	intensity = intensity + ks * pow(max(dot(R, V), 0), u_shiny) * u_intensityspec;
 
 
 	//gl_FragColor = vec4(intensity, 1.0 );
-	gl_FragColor = vec4( color * intensity, 1.0 );
+	gl_FragColor = vec4( intensity, 1.0 );
 	//gl_FragColor = vec4( texture2D(u_spec_tex, v_uv).xyz, 1.0 );
 }
