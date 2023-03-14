@@ -1,3 +1,6 @@
+#pragma once
+
+#include "main/includes.h"
 #include "shader.h"
 #include "texture.h"
 #include "image.h"
