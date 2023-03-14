@@ -11,7 +11,24 @@ struct Light {
 	Vector3 IntensitySpecular; 
 };
 
+struct sUniformData {
+	Matrix44 model;
+	Matrix44 ViewProjMatrix;
+	Vector3 AmbientIntensity;
+	float time;
 
+	Texture* texture;
+
+
+	//light
+	Vector3 Position;
+	Vector3 IntensityDiffuse;
+	Vector3 IntensitySpecular;
+
+	int mode;
+
+
+};
 
 class Material {
 
@@ -43,77 +60,3 @@ private:
 
 
 };
-
-
-
-
-
-struct sUniformData {
-	Matrix44 model;
-	Matrix44 ViewProjMatrix;
-	Vector3 AmbientIntensity;
-	float time; 
-
-	Texture* texture; 
-
-	//material
-	Vector3 Ka; 
-	Vector3 Ks;
-	Vector3 Kd;
-	float shiny; 
-
-	//light
-	Vector3 Position;
-	Vector3 IntensityDiffuse;
-	Vector3 IntensitySpecular;
-
-
-
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

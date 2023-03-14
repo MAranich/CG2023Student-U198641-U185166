@@ -317,7 +317,7 @@ void Entity::Render(sUniformData data)
 
 	material->Enable(data); 
 	mesh->Render();
-
+	material->Disable();
 
 
 }

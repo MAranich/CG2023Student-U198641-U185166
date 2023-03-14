@@ -56,11 +56,14 @@ public:
 	float cumulativeTime;
 
 	bool rendering;
+	int mode;
 	int exercise;
+
+	Material* material;
 
 	Vector3 AmbientIntensity; 
 
-	Light light; 
+	Light light;
 	sUniformData data; 
 
 

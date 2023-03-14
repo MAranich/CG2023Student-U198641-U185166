@@ -40,6 +40,17 @@ void Material::Enable(sUniformData data) {
 	shader->SetMatrix44("u_viewprojection", data.ViewProjMatrix);
 	shader->SetMatrix44("u_model", data.model);
 	shader->SetTexture("u_tex", texture);
+	shader->SetVector3("u_ambientintensity", data.AmbientIntensity);
+	shader->SetVector3("u_ks", SpecularReflectionCoef);
+	shader->SetVector3("u_kd", DiffuseReflectionCoef);
+	shader->SetVector3("u_ka", AmbirentReflectionCoef);
+	shader->SetFloat("u_shiny", Shininess);
+	shader->SetVector3("u_lightpos", data.Position);
+	shader->SetVector3("u_intensitydiff", data.IntensityDiffuse);
+	shader->SetVector3("u_intensityspec", data.IntensitySpecular);
+	shader->SetFloat("u_mode", (float)data.mode);
+
+
 
 }
 

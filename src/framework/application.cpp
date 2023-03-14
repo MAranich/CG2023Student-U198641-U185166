@@ -1,7 +1,8 @@
 #include "application.h"
 #include "mesh.h"
 #include "shader.h"
-#include "utils.h" 
+#include "utils.h"
+#include "material.h"
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -81,9 +82,13 @@ void Application::Init(void)
 	mesh = new Mesh();
 	mesh->CreateQuad();
 
-
+	material = new Material(Vector3(10,10,10), Vector3(200, 200, 200), Vector3(255, 255, 255), 10);
+	
 	tex = new Texture();
 	tex->Load("textures/lee_color_specular.tga");
+	material->SetTexture(tex);
+	material->SetShader(rendshader);
+	object->SetMaterial(material);
 
 
 
@@ -93,39 +98,23 @@ void Application::Init(void)
 // Render one frame
 void Application::Render(void)
 {
-	data.ViewProjMatrix = camera.GetViewProjectionMatrix(); 
+	
 	//data._lights = &light; 
 
-	if (rendering) {
 
-		rendshader->Enable();
+	rendshader->Enable();
+	data.ViewProjMatrix = camera.GetViewProjectionMatrix();
+	data.mode = mode;
+	data.time = cumulativeTime;
+	data.texture = tex;
+	data.Position = light.Position;
+	data.IntensityDiffuse = light.IntensityDiffuse;
+	data.IntensitySpecular = light.IntensitySpecular;
+	//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
 
-		rendshader->SetFloat("u_time", cumulativeTime);
-		//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
-		rendshader->SetMatrix44("u_viewprojection", camera.GetViewProjectionMatrix());
-		rendshader->SetMatrix44("u_model", object->GetModel());
-		rendshader->SetTexture("u_tex", tex);
+	object->Render(data);
 
-		//object->Render();
-
-		rendshader->Disable();
-
-	}
-	else {
-
-
-		shader->Enable();
-		shader->SetFloat("u_exercise", exercise);
-		shader->SetFloat("u_time", cumulativeTime);
-		shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
-
-		shader->SetTexture("u_fruits", fruits);
-
-		mesh->Render();
-
-		shader->Disable();
-
-	}
+	//rendshader->Disable();
 
 
 
