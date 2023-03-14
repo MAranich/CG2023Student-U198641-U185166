@@ -35,7 +35,8 @@ public:
 	Shader* rendshader;
 	Mesh* mesh;
 	Texture* fruits; //1280 * 720
-	Texture* tex;
+	Texture* tex; 
+	Texture* SpecTex; 
 
 
 	//Entity** hierarchy;

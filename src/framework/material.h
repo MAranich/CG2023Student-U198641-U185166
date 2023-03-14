@@ -21,7 +21,7 @@ struct sUniformData {
 	Vector3 AmbientIntensity;
 	float time;
 
-	Texture* texture;
+	Texture* SpecularText;
 
 
 	//light
