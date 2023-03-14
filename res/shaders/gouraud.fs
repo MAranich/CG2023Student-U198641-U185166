@@ -7,7 +7,9 @@ varying vec3 v_world_position;
 
 uniform sampler2D u_tex;
 
-uniform float u_time; 
+uniform float u_time;
+
+varying vec3 v_intensity;
 
 
 void main()
@@ -20,5 +22,5 @@ void main()
 	}
 
 
-	gl_FragColor = vec4( color, 1.0 );
+	gl_FragColor = vec4( v_intensity, 1.0 );
 }

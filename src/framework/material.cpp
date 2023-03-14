@@ -6,7 +6,7 @@
 Material::Material(Vector3 Ka, Vector3 Ks, Vector3 Kd, float shiny) {
 
 
-	AmbirentReflectionCoef = Ka;
+	AmbientReflectionCoef = Ka;
 	SpecularReflectionCoef = Ks;
 	DiffuseReflectionCoef = Kd;
 
@@ -21,7 +21,7 @@ Material::Material(Vector3 Ka, Vector3 Ks, Vector3 Kd, float shiny) {
 Material::Material(Vector3 Ka, Vector3 Ks, Vector3 Kd, float shiny, Shader* s, Texture* t) {
 
 
-	AmbirentReflectionCoef = Ka;
+	AmbientReflectionCoef = Ka;
 	SpecularReflectionCoef = Ks;
 	DiffuseReflectionCoef = Kd;
 
@@ -35,15 +35,16 @@ Material::Material(Vector3 Ka, Vector3 Ks, Vector3 Kd, float shiny, Shader* s, T
 
 void Material::Enable(sUniformData data) {
 
-	shader->SetFloat("u_time", data.time);
 	//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
+	shader->SetFloat("u_time", data.time);
+	shader->SetVector3("u_camerapos", data.CameraPosition);
 	shader->SetMatrix44("u_viewprojection", data.ViewProjMatrix);
 	shader->SetMatrix44("u_model", data.model);
 	shader->SetTexture("u_tex", texture);
 	shader->SetVector3("u_ambientintensity", data.AmbientIntensity);
 	shader->SetVector3("u_ks", SpecularReflectionCoef);
 	shader->SetVector3("u_kd", DiffuseReflectionCoef);
-	shader->SetVector3("u_ka", AmbirentReflectionCoef);
+	shader->SetVector3("u_ka", AmbientReflectionCoef);
 	shader->SetFloat("u_shiny", Shininess);
 	shader->SetVector3("u_lightpos", data.Position);
 	shader->SetVector3("u_intensitydiff", data.IntensityDiffuse);

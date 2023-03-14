@@ -56,7 +56,7 @@ void Application::Init(void)
 
 	printf("Camera is set to perspective mode by deafult. \n");
 
-	light.Position = Vector3(2, 0.5f, 0); 
+	light.Position = Vector3(-20, 20, 10); 
 	light.IntensityDiffuse = Vector3(255, 255, 255);
 	light.IntensitySpecular = Vector3(255, 255, 255);
 	
@@ -78,20 +78,21 @@ void Application::Init(void)
 	rendering = true;
 	exercise = 0;
 
-	rendshader = Shader::Get("shaders/raster.vs", "shaders/raster.fs");
+	rendshader = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
 	//shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
 
 	mesh = new Mesh();
 	mesh->CreateQuad();
 
-	material = new Material(Vector3(10,10,10), Vector3(200, 200, 200), Vector3(255, 255, 255), 10);
+	material = new Material(Vector3(255, 255, 255), Vector3(255, 255, 255), Vector3(200, 200, 200), 50);
 	
 	tex = new Texture();
 	tex->Load("textures/lee_color_specular.tga");
 	material->SetTexture(tex);
 	material->SetShader(rendshader);
 	object->SetMaterial(material);
-
+	mode = 1;
+	AmbientIntensity = Vector3(20, 20, 30);
 
 
 
@@ -105,10 +106,13 @@ void Application::Render(void)
 
 
 	rendshader->Enable();
+	data.mode = mode;
+	data.CameraPosition = camera.eye;
 	data.ViewProjMatrix = camera.GetViewProjectionMatrix();
 	data.mode = mode;
 	data.time = cumulativeTime;
 	data.texture = tex;
+	data.AmbientIntensity= AmbientIntensity;
 	data.Position = light.Position;
 	data.IntensityDiffuse = light.IntensityDiffuse;
 	data.IntensitySpecular = light.IntensitySpecular;

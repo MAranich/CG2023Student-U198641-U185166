@@ -17,6 +17,7 @@ struct Light {
 struct sUniformData {
 	Matrix44 model;
 	Matrix44 ViewProjMatrix;
+	Vector3 CameraPosition;
 	Vector3 AmbientIntensity;
 	float time;
 
@@ -54,7 +55,7 @@ private:
 	Shader* shader; 
 	Texture* texture; 
 
-	Vector3 AmbirentReflectionCoef;
+	Vector3 AmbientReflectionCoef;
 	Vector3 SpecularReflectionCoef;
 	Vector3 DiffuseReflectionCoef; 
 
