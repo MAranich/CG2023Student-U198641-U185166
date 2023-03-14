@@ -49,7 +49,6 @@ void Material::Enable(sUniformData data) {
 	shader->SetVector3("u_lightpos", data.Position);
 	shader->SetVector3("u_intensitydiff", data.IntensityDiffuse);
 	shader->SetVector3("u_intensityspec", data.IntensitySpecular);
-	shader->SetFloat("u_mode", (float)data.mode);
 
 
 

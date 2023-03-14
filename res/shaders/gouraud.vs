@@ -11,7 +11,6 @@ uniform float u_shiny;
 uniform vec3 u_lightpos;
 uniform vec3 u_intensitydiff;
 uniform vec3 u_intensityspec;
-uniform float u_mode;
 
 // Variables to pass to the fragment shader
 varying vec2 v_uv;
@@ -20,7 +19,7 @@ varying vec3 v_world_normal;
 varying vec3 v_intensity;
 
 //here create uniforms for all the data we need here
-float div255 = 0.003921568; //1/255
+float div255 = 0.003921568; // = 1/255
 
 void main()
 {	
@@ -39,15 +38,14 @@ void main()
 
 	// Project the vertex using the model view projection matrix
 	gl_Position = u_viewprojection * vec4(world_position, 1.0); //output of the vertex shader
-	if(u_mode==1){
-		v_intensity = u_ka * div255 * u_ambientintensity;
-		vec3 L = normalize(u_lightpos - v_world_position);
-		v_intensity = v_intensity + u_kd * div255 * max(dot(L, v_world_normal), 0) * u_intensitydiff;
-		v_intensity = v_intensity + u_ks * div255 * u_intensityspec * pow(max(dot(reflect(L, v_world_normal), normalize(v_world_position - u_camerapos)), 0), u_shiny);
+	
+	v_intensity = u_ka * u_ambientintensity;
+	vec3 L = normalize(u_lightpos - v_world_position);
+	v_intensity = v_intensity + u_kd * max(dot(L, v_world_normal), 0) * u_intensitydiff;
+	vec3 V = normalize(v_world_position - u_camerapos);
+	v_intensity = v_intensity + u_ks * u_intensityspec * pow(max(dot(reflect(L, v_world_normal), V), 0), u_shiny);
 
-		v_intensity = v_intensity * div255; //multipliquem per 1/255
-	}else{
-		v_intensity=vec3(0);
-	}
+	v_intensity = v_intensity * div255 * div255; 
+
 
 }

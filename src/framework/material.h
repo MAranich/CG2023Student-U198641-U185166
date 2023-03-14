@@ -29,8 +29,6 @@ struct sUniformData {
 	Vector3 IntensityDiffuse;
 	Vector3 IntensitySpecular;
 
-	int mode;
-
 
 };
 

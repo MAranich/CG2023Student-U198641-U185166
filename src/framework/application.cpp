@@ -56,7 +56,7 @@ void Application::Init(void)
 
 	printf("Camera is set to perspective mode by deafult. \n");
 
-	light.Position = Vector3(-20, 20, 10); 
+	light.Position = Vector3(-2, 2, 0); 
 	light.IntensityDiffuse = Vector3(255, 255, 255);
 	light.IntensitySpecular = Vector3(255, 255, 255);
 	
@@ -106,10 +106,8 @@ void Application::Render(void)
 
 
 	rendshader->Enable();
-	data.mode = mode;
 	data.CameraPosition = camera.eye;
 	data.ViewProjMatrix = camera.GetViewProjectionMatrix();
-	data.mode = mode;
 	data.time = cumulativeTime;
 	data.texture = tex;
 	data.AmbientIntensity= AmbientIntensity;
