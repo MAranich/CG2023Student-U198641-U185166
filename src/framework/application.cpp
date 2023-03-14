@@ -56,23 +56,35 @@ void Application::Init(void)
 
 	printf("Camera is set to perspective mode by deafult. \n");
 
-	light.Position = Vector3(-2, 2, 0); 
-	light.IntensityDiffuse = Vector3(1, 1, 1); 
-	light.IntensitySpecular = Vector3(1, 1, 1) * 5; 
+
+	light = (Light*)malloc(sizeof(Light) * NumLights);
+
+	light[0].Position = Vector3(-2, 2, 0);
+	light[0].IntensityDiffuse = Vector3(1, 1, 1);
+	light[0].IntensitySpecular = Vector3(1, 1, 1) * 5;
 	
+	//satanic lighth
+	light[1].Position = Vector3(2, -0.5f, 0.75f); 
+	light[1].IntensityDiffuse = Vector3(1, 0, 0) * 1.5;
+	light[1].IntensitySpecular = Vector3(1, 1, 1);
 
 
 	Mesh* leeMesh = new Mesh();
 	leeMesh->LoadOBJ("meshes/lee.obj");
 
 
-	object = new Entity(Vector3(0, 0, 0), Vector3(0, PI, 0), leeMesh);
+	object = new Entity(Vector3(0, 0, 0), Vector3(0, (float)PI, 0), leeMesh);
 
 	//object->SetMaterial(new Material())
 
 	//shading time! 
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_ONE, GL_ONE);
+
 	glDepthFunc(GL_LEQUAL);
 
 	rendering = true;
@@ -100,6 +112,11 @@ void Application::Init(void)
 	mode = 1;
 	AmbientIntensity = Vector3(0.4f, 0.4f, 0.4f);
 
+	data.Position = (Vector3*)malloc(sizeof(Vector3) * NumLights);
+	data.IntensityDiffuse = (Vector3*)malloc(sizeof(Vector3) * NumLights);
+	data.IntensitySpecular = (Vector3*)malloc(sizeof(Vector3) * NumLights);
+
+
 
 
 }
@@ -109,6 +126,10 @@ void Application::Render(void)
 {
 	
 	//data._lights = &light; 
+	//float c = 1; 
+	//float s = sin(cumulativeTime * c); 
+	//light.IntensityDiffuse = Vector3(abs(s), abs(-s), 0);
+
 
 
 	rendshader->Enable();
@@ -116,10 +137,17 @@ void Application::Render(void)
 	data.ViewProjMatrix = camera.GetViewProjectionMatrix();
 	data.time = cumulativeTime;
 	data.AmbientIntensity= AmbientIntensity;
-	data.Position = light.Position;
-	data.IntensityDiffuse = light.IntensityDiffuse;
-	data.IntensitySpecular = light.IntensitySpecular; 
-	data.SpecularText = NormTex; 
+	data.NormalText = NormTex;
+	data.NumberOfLights = NumLights;
+
+	for (int i = 0; i < NumLights; i++) {
+
+		data.Position[i] = light[i].Position;
+		data.IntensityDiffuse[i] = light[i].IntensityDiffuse;
+		data.IntensitySpecular[i] = light[i].IntensitySpecular;
+
+	}
+
 
 	//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
 

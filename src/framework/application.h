@@ -59,12 +59,14 @@ public:
 	bool rendering;
 	int mode;
 	int exercise;
+	int NumLights = 2;
+
 
 	Material* material;
 
 	Vector3 AmbientIntensity; 
 
-	Light light;
+	Light* light;
 	sUniformData data; 
 
 

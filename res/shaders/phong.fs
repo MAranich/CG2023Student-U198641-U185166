@@ -5,7 +5,7 @@ varying vec2 v_uv;
 varying vec3 v_world_position; 
 
 uniform sampler2D u_tex;
-uniform sampler2D u_spec_tex;
+uniform sampler2D u_normals;
 uniform float u_time;
 uniform mat4 u_model;
 uniform vec3 u_camerapos;
@@ -29,8 +29,18 @@ void main()
 	float fft = fract(u_time * 0.333) * 2 - 1; 
 
 	//vec3 color = normalize(v_world_normal);
-	vec3 N = normalize(v_world_normal);
 	vec4 color = vec4(0);
+
+	vec4 normal = texture2D(u_normals, v_uv); 
+	normal = normal * 2 - 1; 
+	normal.a = 0; 
+	normal = u_model * normal; 
+	vec3 N = normalize(normal.xyz); 
+
+	float lerpVal = 0.5718281828; 
+
+	N = mix(v_world_normal, N, lerpVal); 
+
 
 	
 	color = texture2D(u_tex, v_uv); 

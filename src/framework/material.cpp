@@ -33,7 +33,7 @@ Material::Material(Vector3 Ka, Vector3 Ks, Vector3 Kd, float shiny, Shader* s, T
 
 }
 
-void Material::Enable(sUniformData data) {
+void Material::Enable(sUniformData data, int index) {
 
 	//shader->SetVector3("u_resolution", Vector3(window_width, window_height, 0));
 	shader->SetFloat("u_time", data.time);
@@ -41,15 +41,16 @@ void Material::Enable(sUniformData data) {
 	shader->SetMatrix44("u_viewprojection", data.ViewProjMatrix);
 	shader->SetMatrix44("u_model", data.model);
 	shader->SetTexture("u_tex", texture);
-	shader->SetTexture("u_spec_tex", data.SpecularText);
+	shader->SetTexture("u_normals", data.NormalText);
 	shader->SetVector3("u_ambientintensity", data.AmbientIntensity);
 	shader->SetVector3("u_ks", SpecularReflectionCoef);
 	shader->SetVector3("u_kd", DiffuseReflectionCoef);
 	shader->SetVector3("u_ka", AmbientReflectionCoef);
 	shader->SetFloat("u_shiny", Shininess);
-	shader->SetVector3("u_lightpos", data.Position);
-	shader->SetVector3("u_intensitydiff", data.IntensityDiffuse);
-	shader->SetVector3("u_intensityspec", data.IntensitySpecular);
+	shader->SetVector3("u_lightpos", data.Position[index]);
+	shader->SetVector3("u_intensitydiff", data.IntensityDiffuse[index]);
+	shader->SetVector3("u_intensityspec", data.IntensitySpecular[index]);
+
 
 
 

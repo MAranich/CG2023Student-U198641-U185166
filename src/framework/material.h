@@ -21,13 +21,14 @@ struct sUniformData {
 	Vector3 AmbientIntensity;
 	float time;
 
-	Texture* SpecularText;
+	Texture* NormalText;
 
 
 	//light
-	Vector3 Position;
-	Vector3 IntensityDiffuse;
-	Vector3 IntensitySpecular;
+	int NumberOfLights; 
+	Vector3* Position;
+	Vector3* IntensityDiffuse;
+	Vector3* IntensitySpecular;
 
 
 };
@@ -44,7 +45,7 @@ public:
 
 	void SetTexture(Texture* t) { texture = t; };
 
-	void Enable(sUniformData data); 
+	void Enable(sUniformData data, int index); 
 	void Disable() { shader->Disable(); };
 
 
