@@ -57,6 +57,8 @@ void Application::Init(void)
 	printf("Camera is set to perspective mode by deafult. \n");
 
 	light.Position = Vector3(2, 0.5f, 0); 
+	light.IntensityDiffuse = Vector3(255, 255, 255);
+	light.IntensitySpecular = Vector3(255, 255, 255);
 	
 
 
