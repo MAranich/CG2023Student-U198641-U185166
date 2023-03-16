@@ -354,31 +354,6 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 	}
 
 
-	/*
-	
-			case SDLK_w: //forward (pos Z dir)
-			KeyDir = Vector3(1, 0, 0);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
-			eye = eye + KeyDir * speed * secElapsed;
-			break;
-		case SDLK_a:
-			KeyDir = Vector3(0, 0, -1);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
-			eye = eye + KeyDir * speed * secElapsed;
-			break;
-		case SDLK_s:
-			KeyDir = Vector3(-1, 0, 0);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
-			eye = eye + KeyDir * speed * secElapsed;
-			break;
-		case SDLK_d:
-			KeyDir = Vector3(0, 0, 1);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
-			eye = eye + KeyDir * speed * secElapsed;
-			break;
-	
-	*/
-
 
 }
 
