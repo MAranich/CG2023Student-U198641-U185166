@@ -113,7 +113,7 @@ void Application::Init(void)
 	data.IntensityDiffuse = (Vector3*)malloc(sizeof(Vector3) * NumLights);
 	data.IntensitySpecular = (Vector3*)malloc(sizeof(Vector3) * NumLights);
 
-
+	movelight = false;
 
 
 }
@@ -127,7 +127,8 @@ void Application::Render(void)
 	//float s = sin(cumulativeTime * c); 
 	//light.IntensityDiffuse = Vector3(abs(s), abs(-s), 0);
 
-
+	if (exercise == 5 && movelight) light[1].Position = Vector3(cos(cumulativeTime), light[1].Position.y, sin(cumulativeTime));
+	else if (exercise == 5) light[1].Position = Vector3(2, -0.5f, 0.75f);
 
 	rendshader->Enable();
 	data.CameraPosition = camera.eye;
@@ -262,6 +263,8 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 				printf("Camera fov: %0.3lf\n", camera.fov);
 			}
 			break;
+		case SDLK_l:
+			movelight = !movelight;
 		default:
 			break;
 		}
