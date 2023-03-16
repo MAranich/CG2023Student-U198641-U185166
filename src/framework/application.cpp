@@ -43,7 +43,7 @@ void Application::Init(void)
 	LastPosEye = Vector2(0, 0);
 	speed = 30;
 	Orbiting = false;
-	OrbitingPoint = Vector3(0, 0.2f, 0);
+	OrbitingPoint = Vector3(0, 0.25f, 0);
 	cumulativeTime = 0;
 
 	//framebuffer.interpolatedColor = true;
@@ -221,11 +221,11 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 			Dist = eye - OrbitingPoint;
 			dist = sqrtf(Dist.Dot(Dist));
 			SpeedOverDist = speed / dist;//rotate speed units of distance in a circle of dist radius
-			angle = SpeedOverDist * 0.2f; //rad
+			angle = SpeedOverDist * secElapsed; //rad
 			c = cos(angle);
 			s = sin(angle);
 
-			DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
+			DistRot = Vector3(Dist.x * c - Dist.z * s, 0, Dist.x * s + Dist.z * c);
 			//multyply Distance by rotation matrix
 
 			eye = OrbitingPoint + DistRot;
@@ -236,11 +236,11 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 			Dist = eye - OrbitingPoint;
 			dist = sqrtf(Dist.Dot(Dist));
 			SpeedOverDist = speed / dist; //rotate speed units of distance in a circle of dist radius
-			angle = SpeedOverDist * 0.2f; //rad
-			c = cos(angle);
-			s = sin(-angle);
+			angle = SpeedOverDist * secElapsed; //rad
+			c = cos(angle); 
+			s = sin(-angle); 
 
-			DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
+			DistRot = Vector3(Dist.x * c - Dist.z * s, 0, Dist.x * s + Dist.z * c);
 			//multyply Distance by rotation matrix
 
 			eye = OrbitingPoint + DistRot;
@@ -272,6 +272,13 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 		Vector3 KeyDir = Vector3(1, 0, 0);
 		float s = sin(Delta.x);
 		float c = cos(Delta.x);
+		
+		/*
+		Basic vector rotation: 
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, 0, KeyDir.x * s + KeyDir.z * c);
+		The code below will silplify rotations when one of the terms is 0
+		*/
+
 		switch (event.keysym.sym) {
 		case SDLK_p:
 			camera.SetPerspective(90.0f, 1.6f, 0.02f, 200.0f);
@@ -281,30 +288,26 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 			camera.SetOrthographic(-1, 1, 1, -1, -1, 1);
 			printf("Camera is set to ortographic mode. \n");
 			break;
-		case SDLK_w: //forward (pos Z dir)
-			KeyDir = Vector3(1, 0, 0);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+		case SDLK_w: // forward 
+			KeyDir = Vector3(c, 0, s);
 			eye = eye + KeyDir * speed * secElapsed;
 			break;
-		case SDLK_a:
-			KeyDir = Vector3(0, 0, -1);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+		case SDLK_a: // left
+			KeyDir = Vector3( s, 0, -c);
 			eye = eye + KeyDir * speed * secElapsed;
 			break;
-		case SDLK_s:
-			KeyDir = Vector3(-1, 0, 0);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+		case SDLK_s: // backwards
+			KeyDir = Vector3(-c, 0, -s);
 			eye = eye + KeyDir * speed * secElapsed;
 			break;
-		case SDLK_d:
-			KeyDir = Vector3(0, 0, 1);
-			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+		case SDLK_d: // right
+			KeyDir = Vector3(-s, 0, c);
 			eye = eye + KeyDir * speed * secElapsed;
 			break;
-		case SDLK_SPACE: //go up 
+		case SDLK_SPACE: // up 
 			eye = eye + Vector3(0, 1, 0) * speed * secElapsed;
 			break;
-		case SDLK_v://go down
+		case SDLK_v:// down
 			eye = eye + Vector3(0, -1, 0) * speed * secElapsed;
 			break;
 		case SDLK_PLUS:
@@ -348,7 +351,30 @@ void Application::OnKeyPressed(SDL_KeyboardEvent event)
 	}
 
 
-
+	/*
+	
+			case SDLK_w: //forward (pos Z dir)
+			KeyDir = Vector3(1, 0, 0);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_a:
+			KeyDir = Vector3(0, 0, -1);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_s:
+			KeyDir = Vector3(-1, 0, 0);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_d:
+			KeyDir = Vector3(0, 0, 1);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, KeyDir.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+	
+	*/
 
 
 }
@@ -359,8 +385,8 @@ void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 	if (event.button == 1) { //if LMB is clicked
 		Orbiting = !Orbiting;
 		if (Orbiting) {
-			eye.y = 0;
 			//OrbitingPoint = Vector3(0, 0, 0); //Set Orbiting point, Could be changed
+			eye.y = OrbitingPoint.y; 
 			printf("Now orbiting arround (%0.3lf, %0.3lf, %0.3lf) \nPress A and D to orbit! \n", OrbitingPoint.x, OrbitingPoint.y, OrbitingPoint.z);
 		}
 		else {
@@ -391,7 +417,7 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 			float c = cos(angle);
 			float s = sin(angle);
 
-			DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
+			DistRot = Vector3(Dist.x * c - Dist.z * s, 0, Dist.x * s + Dist.z * c);
 			//multyply Distance by rotation matrix
 
 			eye = OrbitingPoint + DistRot;
