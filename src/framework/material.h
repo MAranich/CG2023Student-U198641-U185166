@@ -30,6 +30,12 @@ struct sUniformData {
 	Vector3* IntensityDiffuse;
 	Vector3* IntensitySpecular;
 
+	bool UseAmbient; 
+	bool UseDiff; 
+	bool UseSpec; 
+
+	float NormCoef; 
+	bool isPhong; 
 
 };
 

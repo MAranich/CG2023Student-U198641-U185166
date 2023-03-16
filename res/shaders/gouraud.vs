@@ -39,13 +39,14 @@ void main()
 	// Project the vertex using the model view projection matrix
 	gl_Position = u_viewprojection * vec4(world_position, 1.0); //output of the vertex shader
 	
-	v_intensity = u_ka * u_ambientintensity;
-	vec3 L = normalize(u_lightpos - v_world_position);
-	v_intensity = v_intensity + u_kd * max(dot(L, v_world_normal), 0) * u_intensitydiff;
-	vec3 V = normalize(v_world_position - u_camerapos);
-	v_intensity = v_intensity + u_ks * u_intensityspec * pow(max(dot(reflect(L, v_world_normal), V), 0), u_shiny);
+	v_intensity = u_ka * u_ambientintensity; //la
 
-	v_intensity = v_intensity * div255 * div255; 
+	vec3 L = normalize(u_lightpos - v_world_position); //ld
+	v_intensity = v_intensity + u_kd * max(dot(L, v_world_normal), 0) * u_intensitydiff;
+
+	vec3 V = normalize(u_camerapos - v_world_position); //ls
+	vec3 R = reflect(-L, v_world_normal); 
+	v_intensity = v_intensity + u_ks * u_intensityspec * pow(max(dot(V, R), 0), u_shiny);
 
 
 }

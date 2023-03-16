@@ -1,24 +1,28 @@
 // This variables comes from the vertex shader
 // They are baricentric interpolated by pixel according to the distance to every vertex
 varying vec3 v_world_normal; 
-varying vec2 v_uv;
+varying vec2 v_uv; 
 varying vec3 v_world_position; 
 
-uniform sampler2D u_tex;
-uniform sampler2D u_normals;
-uniform float u_time;
-uniform mat4 u_model;
-uniform vec3 u_camerapos;
-uniform mat4 u_viewprojection;
-uniform vec3 u_ambientintensity;
-uniform vec3 u_ks;
-uniform vec3 u_kd;
-uniform vec3 u_ka;
-uniform float u_shiny;
-uniform vec3 u_lightpos;
-uniform vec3 u_intensitydiff;
-uniform vec3 u_intensityspec;
+uniform sampler2D u_tex; 
+uniform sampler2D u_normals; 
+uniform float u_time; 
+uniform mat4 u_model; 
+uniform vec3 u_camerapos; 
+uniform mat4 u_viewprojection; 
+uniform vec3 u_ambientintensity; 
+uniform vec3 u_ks; 
+uniform vec3 u_kd; 
+uniform vec3 u_ka; 
+uniform float u_shiny; 
+uniform vec3 u_lightpos; 
+uniform vec3 u_intensitydiff; 
+uniform vec3 u_intensityspec; 
 
+uniform float u_f_UseAmbient; 
+uniform float u_f_UseDiff; 
+uniform float u_f_UseSpec; 
+uniform float u_Norm_Coef; 
 //float div255 = 0.0039215686; // = 1/255
 
 void main()
@@ -37,9 +41,7 @@ void main()
 	normal = u_model * normal; 
 	vec3 N = normalize(normal.xyz); 
 
-	float lerpVal = 0.5718281828; 
-
-	N = mix(v_world_normal, N, lerpVal); 
+	N = mix(v_world_normal, N, u_Norm_Coef); 
 
 
 	

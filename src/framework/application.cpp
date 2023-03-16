@@ -90,12 +90,9 @@ void Application::Init(void)
 	rendering = true;
 	exercise = 0;
 
-	//rendshader = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
-	rendshader = Shader::Get("shaders/phong.vs", "shaders/phong.fs");
-	//shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+	rendshader = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs"); 
+	//rendshader = Shader::Get("shaders/phong.vs", "shaders/phong.fs");
 
-	mesh = new Mesh();
-	mesh->CreateQuad();
 
 	material = new Material(Vector3(0.5f, 0.5f, 0.5f), Vector3(0.8f, 0.8f, 0.8f), Vector3(1, 1, 1), 50);
 	
@@ -138,7 +135,8 @@ void Application::Render(void)
 	data.time = cumulativeTime;
 	data.AmbientIntensity= AmbientIntensity;
 	data.NormalText = NormTex;
-	data.NumberOfLights = NumLights;
+	data.NumberOfLights = NumLights; 
+	data.isPhong = exercise != 0; 
 
 	for (int i = 0; i < NumLights; i++) {
 
@@ -185,170 +183,165 @@ void Application::Update(float seconds_elapsed)
 void Application::OnKeyPressed(SDL_KeyboardEvent event)
 {
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
-	if (rendering) {
+
+	if (Orbiting) {
+		Vector3 Dist;
+		Vector3 DistRot;
+		float angle = 0;
+		float dist = 0;;
+		float SpeedOverDist = 0;
+		float c = 0; //cos
+		float s = 0; //sin
+
+		switch (event.keysym.sym) {
+		case SDLK_p:
+			camera.SetPerspective(100, 1.6f, 0.02f, 200.0);
+			printf("Camera is set to perspective mode. \n");
+			break;
+		case SDLK_o:
+			camera.SetOrthographic(-1, 1, 1, -1, -1, 1);
+			printf("Camera is set to ortographic mode. \n");
+			break;
+		case SDLK_w: //forward
+			Dist = OrbitingPoint - eye; //vector from eye to Orb.Point
+			Dist.Normalize();
+			eye = eye + Dist * speed * secElapsed;
+			break;
+		case SDLK_a:
 
 
-		if (Orbiting) {
-			Vector3 Dist;
-			Vector3 DistRot;
-			float angle = 0;
-			float dist = 0;;
-			float SpeedOverDist = 0;
-			float c = 0; //cos
-			float s = 0; //sin
+			Dist = eye - OrbitingPoint;
+			dist = sqrtf(Dist.Dot(Dist));
+			SpeedOverDist = speed / dist;//rotate speed units of distance in a circle of dist radius
+			angle = SpeedOverDist * 0.2f; //rad
+			c = cos(angle);
+			s = sin(angle);
 
-			switch (event.keysym.sym) {
-			case SDLK_p:
-				camera.SetPerspective(100, 1.6f, 0.02f, 200.0);
-				printf("Camera is set to perspective mode. \n");
-				break;
-			case SDLK_o:
-				camera.SetOrthographic(-1, 1, 1, -1, -1, 1);
-				printf("Camera is set to ortographic mode. \n");
-				break;
-			case SDLK_w: //forward
-				Dist = OrbitingPoint - eye; //vector from eye to Orb.Point
-				Dist.Normalize();
-				eye = eye + Dist * speed * secElapsed;
-				break;
-			case SDLK_a:
+			DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
+			//multyply Distance by rotation matrix
+
+			eye = OrbitingPoint + DistRot;
+			break;
+		case SDLK_d:
 
 
-				Dist = eye - OrbitingPoint;
-				dist = sqrtf(Dist.Dot(Dist));
-				SpeedOverDist = speed / dist;//rotate speed units of distance in a circle of dist radius
-				angle = SpeedOverDist * 0.2f; //rad
-				c = cos(angle);
-				s = sin(angle);
+			Dist = eye - OrbitingPoint;
+			dist = sqrtf(Dist.Dot(Dist));
+			SpeedOverDist = speed / dist; //rotate speed units of distance in a circle of dist radius
+			angle = SpeedOverDist * 0.2f; //rad
+			c = cos(angle);
+			s = sin(-angle);
 
-				DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
-				//multyply Distance by rotation matrix
+			DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
+			//multyply Distance by rotation matrix
 
-				eye = OrbitingPoint + DistRot;
-				break;
-			case SDLK_d:
-
-
-				Dist = eye - OrbitingPoint;
-				dist = sqrtf(Dist.Dot(Dist));
-				SpeedOverDist = speed / dist; //rotate speed units of distance in a circle of dist radius
-				angle = SpeedOverDist * 0.2f; //rad
-				c = cos(angle);
-				s = sin(-angle);
-
-				DistRot = Vector3(Dist.x * c - Dist.z * s, OrbitingPoint.y, Dist.x * s + Dist.z * c);
-				//multyply Distance by rotation matrix
-
-				eye = OrbitingPoint + DistRot;
-				break;
-			case SDLK_s:
-				Dist = OrbitingPoint - eye; //vector from eye to Orb.Point
-				Dist.Normalize();
-				eye = eye - Dist * speed * secElapsed;
-				break;
-			case SDLK_PLUS:
-				if (camera.type == camera.PERSPECTIVE) {
-					camera.SetPerspective(camera.fov - 5, 1.6f, 0.01f, 200.0f);
-					printf("Camera fov: %0.3lf\n", camera.fov);
-				}
-				break;
-			case SDLK_MINUS:
-				if (camera.type == camera.PERSPECTIVE) {
-					camera.SetPerspective(camera.fov + 5, 1.6f, 0.02f, 200.0f);
-					printf("Camera fov: %0.3lf\n", camera.fov);
-				}
-				break;
-			default:
-				break;
+			eye = OrbitingPoint + DistRot;
+			break;
+		case SDLK_s:
+			Dist = OrbitingPoint - eye; //vector from eye to Orb.Point
+			Dist.Normalize();
+			eye = eye - Dist * speed * secElapsed;
+			break;
+		case SDLK_PLUS:
+			if (camera.type == camera.PERSPECTIVE) {
+				camera.SetPerspective(camera.fov - 5, 1.6f, 0.01f, 200.0f);
+				printf("Camera fov: %0.3lf\n", camera.fov);
 			}
-
-
-		}
-		else {
-			Vector3 KeyDir = Vector3(1, 0, 0);
-			float s = sin(Delta.x);
-			float c = cos(Delta.x);
-			switch (event.keysym.sym) {
-			case SDLK_p:
-				camera.SetPerspective(90.0f, 1.6f, 0.02f, 200.0f);
-				printf("Camera is set to perspective mode. \n");
-				break;
-			case SDLK_o:
-				camera.SetOrthographic(-1, 1, 1, -1, -1, 1);
-				printf("Camera is set to ortographic mode. \n");
-				break;
-			case SDLK_w: //forward (pos Z dir)
-				KeyDir = Vector3(1, 0, 0);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
-				eye = eye + KeyDir * speed * secElapsed;
-				break;
-			case SDLK_a:
-				KeyDir = Vector3(0, 0, -1);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
-				eye = eye + KeyDir * speed * secElapsed;
-				break;
-			case SDLK_s:
-				KeyDir = Vector3(-1, 0, 0);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
-				eye = eye + KeyDir * speed * secElapsed;
-				break;
-			case SDLK_d:
-				KeyDir = Vector3(0, 0, 1);
-				KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
-				eye = eye + KeyDir * speed * secElapsed;
-				break;
-			case SDLK_SPACE: //go up 
-				eye = eye + Vector3(0, 1, 0) * speed * secElapsed;
-				break;
-			case SDLK_v://go down
-				eye = eye + Vector3(0, -1, 0) * speed * secElapsed;
-				break;
-			case SDLK_PLUS:
-				if (camera.type == camera.PERSPECTIVE) {
-					camera.SetPerspective(camera.fov - 5, 1.6f, 0.01f, 200.0f);
-					printf("Camera fov: %0.3lf\n", camera.fov);
-				}
-				break;
-			case SDLK_MINUS:
-				if (camera.type == camera.PERSPECTIVE) {
-					camera.SetPerspective(camera.fov + 5, 1.6f, 0.02f, 200.0f);
-					printf("Camera fov: %0.3lf\n", camera.fov);
-				}
-				break;
-			default:
-				break;
+			break;
+		case SDLK_MINUS:
+			if (camera.type == camera.PERSPECTIVE) {
+				camera.SetPerspective(camera.fov + 5, 1.6f, 0.02f, 200.0f);
+				printf("Camera fov: %0.3lf\n", camera.fov);
 			}
-
-
+			break;
+		default:
+			break;
 		}
 
-
-
-		if (event.keysym.sym == SDLK_RETURN) {
-			//rendering = false;
-			//camera.eye = Vector3(0, 0, -1);
-			//camera.center = Vector3(0, 0, 0);
-			//camera.LookAt(eye, center, Vector3(0, 1, 0));
-		}
 
 	}
-	else
-	{
-
-
-		if (event.keysym.sym == SDLK_RETURN) {
-			//rendering = true;
+	else {
+		Vector3 KeyDir = Vector3(1, 0, 0);
+		float s = sin(Delta.x);
+		float c = cos(Delta.x);
+		switch (event.keysym.sym) {
+		case SDLK_p:
+			camera.SetPerspective(90.0f, 1.6f, 0.02f, 200.0f);
+			printf("Camera is set to perspective mode. \n");
+			break;
+		case SDLK_o:
+			camera.SetOrthographic(-1, 1, 1, -1, -1, 1);
+			printf("Camera is set to ortographic mode. \n");
+			break;
+		case SDLK_w: //forward (pos Z dir)
+			KeyDir = Vector3(1, 0, 0);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_a:
+			KeyDir = Vector3(0, 0, -1);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_s:
+			KeyDir = Vector3(-1, 0, 0);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_d:
+			KeyDir = Vector3(0, 0, 1);
+			KeyDir = Vector3(KeyDir.x * c - KeyDir.z * s, OrbitingPoint.y, KeyDir.x * s + KeyDir.z * c);
+			eye = eye + KeyDir * speed * secElapsed;
+			break;
+		case SDLK_SPACE: //go up 
+			eye = eye + Vector3(0, 1, 0) * speed * secElapsed;
+			break;
+		case SDLK_v://go down
+			eye = eye + Vector3(0, -1, 0) * speed * secElapsed;
+			break;
+		case SDLK_PLUS:
+			if (camera.type == camera.PERSPECTIVE) {
+				camera.SetPerspective(camera.fov - 5, 1.6f, 0.01f, 200.0f);
+				printf("Camera fov: %0.3lf\n", camera.fov);
+			}
+			break;
+		case SDLK_MINUS:
+			if (camera.type == camera.PERSPECTIVE) {
+				camera.SetPerspective(camera.fov + 5, 1.6f, 0.02f, 200.0f);
+				printf("Camera fov: %0.3lf\n", camera.fov);
+			}
+			break;
+		default:
+			break;
 		}
-		else if (event.keysym.sym == SDLK_RIGHT) exercise++;
-		else if (event.keysym.sym == SDLK_LEFT) exercise--;
+
+
+	}
+
+
+	bool b1 = event.keysym.sym == SDLK_RIGHT;
+	bool b2 = event.keysym.sym == SDLK_LEFT;
+
+	if (b1 || b2) {
+
+		if (b1) exercise++;
+		else exercise--;
 
 		//do a clamp()
 		if (exercise < 0) exercise = 0;
-		else if (15 < exercise) exercise = 15; 
+		else if (5 < exercise) exercise = 5;
+
+		printf("\tCurrenly displaying exercise %d. \n\n", exercise);
+
+		if (exercise == 0) rendshader = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
+		else rendshader = Shader::Get("shaders/phong.vs", "shaders/phong.fs");
+		material->SetShader(rendshader);
 
 	}
 
-	//printf("\tCurrenly displaying exercise %d. \n\n", exercise);
+
+
+
 
 }
 

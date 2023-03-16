@@ -314,25 +314,32 @@ void Entity::Render(sUniformData data)
 	
 	
 	data.model = model;
-
-
 	material->Enable(data, 0);
 	mesh->Render();
 
-	glEnable(GL_BLEND);
+
+	if (data.isPhong) {
 
 
-	for (int i = 1; i < data.NumberOfLights; i++) {
 
-		material->Enable(data, i); 
-		mesh->Render(); 
+		glEnable(GL_BLEND);
+
+
+		for (int i = 1; i < data.NumberOfLights; i++) {
+
+			material->Enable(data, i);
+			mesh->Render();
+
+		}
+
+		glDisable(GL_BLEND);
 
 	}
 
-	glDisable(GL_BLEND);
+	material->Disable();
 
 
-	material->Disable(); 
+
 
 
 }
