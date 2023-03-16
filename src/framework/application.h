@@ -60,6 +60,7 @@ public:
 	int mode;
 	int exercise;
 	int NumLights = 2;
+	bool movelight;
 
 
 	Material* material;
