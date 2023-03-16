@@ -135,8 +135,16 @@ void Application::Render(void)
 	data.time = cumulativeTime;
 	data.AmbientIntensity= AmbientIntensity;
 	data.NormalText = NormTex;
-	data.NumberOfLights = NumLights; 
-	data.isPhong = exercise != 0; 
+
+	//interactivity for exercises
+	data.isPhong = exercise != 0; //use gourad at 1st exercise
+	data.NormCoef = 0.5718281828 * (float)(4 <= exercise); //use the normals only at the few last exercises (with coef = 0.57...)
+	data.UseTexture = exercise != 1; //dont use texture for the 2nd exercise
+	data.UseSpec = 3 < exercise;  // only use specular map after ex. 3
+	data.NumberOfLights = exercise == 5 ? NumLights : 1; //just use multiple lights at the last exercise
+
+
+
 
 	for (int i = 0; i < NumLights; i++) {
 

@@ -314,6 +314,7 @@ void Entity::Render(sUniformData data)
 	
 	
 	data.model = model;
+	data.UseAmbient = 1; 
 	material->Enable(data, 0);
 	mesh->Render();
 
@@ -323,6 +324,7 @@ void Entity::Render(sUniformData data)
 
 
 		glEnable(GL_BLEND);
+		data.UseAmbient = 0;
 
 
 		for (int i = 1; i < data.NumberOfLights; i++) {

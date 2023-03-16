@@ -51,7 +51,11 @@ void Material::Enable(sUniformData data, int index) {
 
 	if (data.isPhong) {
 		shader->SetTexture("u_tex", texture);
-		shader->SetTexture("u_normals", data.NormalText);
+		shader->SetTexture("u_normals", data.NormalText); 
+		shader->SetFloat("u_Norm_Coef", data.NormCoef);
+		shader->SetFloat("u_f_UseAmbient", (float)data.UseAmbient);
+		shader->SetFloat("u_f_UseTexture", (float)data.UseTexture);
+		shader->SetFloat("u_f_UseSpec", (float)data.UseSpec);
 	}
 
 

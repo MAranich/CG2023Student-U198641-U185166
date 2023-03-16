@@ -20,9 +20,9 @@ uniform vec3 u_intensitydiff;
 uniform vec3 u_intensityspec; 
 
 uniform float u_f_UseAmbient; 
-uniform float u_f_UseDiff; 
 uniform float u_f_UseSpec; 
 uniform float u_Norm_Coef; 
+uniform float u_f_UseTexture; 
 //float div255 = 0.0039215686; // = 1/255
 
 void main()
@@ -46,9 +46,11 @@ void main()
 
 	
 	color = texture2D(u_tex, v_uv); 
+	color = mix(vec4(1), color, u_f_UseTexture); 
 	
 	//La
-	vec3 intensity = u_ka * color.xyz * u_ambientintensity; 
+	vec3 intensity = u_ka * color.xyz * u_ambientintensity * u_f_UseAmbient; 
+	//u_f_UseAmbient is 0 or 1 depending if we want to use the ambient light or not
 
 	//Ld
 	vec3 L = normalize(u_lightpos - v_world_position);
@@ -58,7 +60,7 @@ void main()
 	vec3 V = normalize(u_camerapos - v_world_position);
 	vec3 R = reflect(-L, N); 
 	R = normalize(R); 
-	vec3 ks = vec3(color.a); 
+	vec3 ks = mix(u_ks, vec3(color.a), u_f_UseSpec); 
 	intensity = intensity + ks * pow(max(dot(R, V), 0), u_shiny) * u_intensityspec;
 
 

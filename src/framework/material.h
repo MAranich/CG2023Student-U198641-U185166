@@ -31,7 +31,7 @@ struct sUniformData {
 	Vector3* IntensitySpecular;
 
 	bool UseAmbient; 
-	bool UseDiff; 
+	bool UseTexture;
 	bool UseSpec; 
 
 	float NormCoef; 
