@@ -62,6 +62,8 @@ public:
 	int NumLights = 2;
 	bool movelight;
 
+	float PreviousAspectRatio; 
+
 
 	Material* material;
 

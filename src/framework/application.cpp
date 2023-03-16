@@ -46,13 +46,10 @@ void Application::Init(void)
 	OrbitingPoint = Vector3(0, 0.25f, 0);
 	cumulativeTime = 0;
 
-	//framebuffer.interpolatedColor = true;
-	//framebuffer.occlusion = true;
-	//framebuffer.textures = true;
-
 
 	//camera.SetPerspective(80.0f, (float)framebuffer.width / (float)framebuffer.height, 0.02f, 100.0f);
-	camera.SetPerspective(80.0f, 1.6f, 0.02f, 100.0f);
+	PreviousAspectRatio = window_width / window_height; 
+	camera.SetPerspective(80.0f, PreviousAspectRatio, 0.02f, 100.0f);
 
 	printf("Camera is set to perspective mode by deafult. \n");
 
@@ -113,7 +110,7 @@ void Application::Init(void)
 	data.IntensityDiffuse = (Vector3*)malloc(sizeof(Vector3) * NumLights);
 	data.IntensitySpecular = (Vector3*)malloc(sizeof(Vector3) * NumLights);
 
-	movelight = false;
+	movelight = true;
 
 
 }
@@ -183,6 +180,11 @@ void Application::Update(float seconds_elapsed)
 		CamDir = Vector3(SDy * cos((float)Delta.x), cos((float)Delta.y), SDy * sin((float)Delta.x));
 		camera.LookAt(eye, eye + CamDir, Vector3(0, 1, 0));
 
+	}
+	float currAR = window_width / window_height; 
+	if(currAR != PreviousAspectRatio) {
+		PreviousAspectRatio = currAR;
+		camera.SetAspectRatio(currAR);
 	}
 
 
